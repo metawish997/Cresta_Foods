@@ -83,9 +83,16 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Cresta Foods API is running', timestamp: new Date().toISOString() });
 });
 
-// ─── 404 Handler ──────────────────────────────────────────────────────────────
-app.use((req, res) => {
+// ─── 404 Handler for API ──────────────────────────────────────────────────────
+app.use('/api', (req, res) => {
   res.status(404).json({ message: `Route ${req.method} ${req.path} not found` });
+});
+
+// ─── Serve Frontend Static Files & Fallback ───────────────────────────────────
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // ─── Global Error Handler ─────────────────────────────────────────────────────

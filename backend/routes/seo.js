@@ -5,8 +5,8 @@ import { verifyToken, checkPermission } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// GET all SEO settings (admin)
-router.get('/', [verifyToken, checkPermission('manage_seo')], async (req, res) => {
+// GET all SEO settings (public)
+router.get('/', async (req, res) => {
   try {
     const settings = await SeoSetting.find().sort({ page_slug: 1 });
     res.json(settings);

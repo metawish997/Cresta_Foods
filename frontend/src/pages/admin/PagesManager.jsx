@@ -5,7 +5,7 @@ const PAGES = [
   { title: 'Homepage', path: '/', description: 'Edit the main landing page, hero sliders, and statistics.' },
   { title: 'Why Us (About)', path: '/about', description: 'Edit the About Us page, values, and client logos.' },
   { title: 'Global Exports', path: '/global-exports', description: 'Edit the global presence map and export capabilities.' },
-  { title: 'Application', path: '/application', description: 'Edit the application industries and use cases.' },
+  { title: 'Application', path: '/application-platforms', description: 'Edit the application industries and use cases.' },
   { title: 'Get in Touch', path: '/contact', description: 'Edit the contact information and office locations.' }
 ];
 

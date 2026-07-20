@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url';
 import fs from 'fs';
 
 import connectDB from './config/db.js';
-import { PORT, uploadsDir } from './config/env.js';
+import { uploadsDir } from './config/env.js';
 import { initIO } from './utils/socket.js';
 
 // Routes
@@ -44,13 +44,13 @@ const httpServer = createServer(app);
 // Initialize Socket.IO
 initIO(httpServer);
 
-// Connect to MongoDB
-await connectDB();
+// ─── Port setup ────────────────────────────────────────────────────────────────
+const PORT = process.env.PORT || 5001;
 
 // ─── Middleware ────────────────────────────────────────────────────────────────
 app.use(compression());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL || '*',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -92,20 +92,32 @@ app.use('/api', (req, res) => {
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  const indexPath = path.join(__dirname, 'public', 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.send('API Server Running...');
+  }
 });
 
 // ─── Global Error Handler ─────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
-  try {
-    fs.appendFileSync('D:/demo_uis/CrestaFoods/backend/error.log', new Date().toISOString() + '\\n' + err.stack + '\\nBODY: ' + JSON.stringify(req.body) + '\\n\\n');
-  } catch (e) {}
   res.status(500).json({ message: err.message || 'Internal server error' });
 });
 
-// ─── Start Server ─────────────────────────────────────────────────────────────
-httpServer.listen(PORT, '0.0.0.0', () => {
-  console.log(`>>> Cresta Foods API running on port ${PORT}`);
-  console.log(`>>> Uploads directory: ${uploadsDir}`);
-});
+// ─── Start Server & Connect DB Safe Manner ────────────────────────────────────
+const startServer = async () => {
+  try {
+    await connectDB();
+    console.log('>>> MongoDB Connected Successfully');
+  } catch (dbErr) {
+    console.error('>>> MongoDB Connection Error:', dbErr.message);
+  }
+
+  httpServer.listen(PORT, '0.0.0.0', () => {
+    console.log(`>>> Cresta Foods API running on port ${PORT}`);
+  });
+};
+
+startServer();

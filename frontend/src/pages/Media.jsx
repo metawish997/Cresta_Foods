@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiXMark, HiPlay } from 'react-icons/hi2';
+import SeoHead from '../components/SeoHead';
 
 const galleryImages = [
   { id: 1, src: 'https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=800&q=80', alt: 'Manufacturing Plant', category: 'Lab & Facilities' },
@@ -48,12 +49,9 @@ const Media = () => {
     ? galleryImages 
     : galleryImages.filter(img => img.category === tab);
 
-  useEffect(() => {
-    document.title = 'Media Gallery | Cresta Foods';
-  }, []);
-
   return (
     <div className="w-full min-h-screen flex flex-col">
+      <SeoHead slug="media" />
       {/* Hero Banner */}
       <section className="relative h-48 sm:h-[40vh] min-h-[250px] overflow-hidden flex items-end">
         <img

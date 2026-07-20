@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlineCalendar, HiOutlineClock, HiArrowRight, HiOutlineSearch } from 'react-icons/hi';
 import { HiMagnifyingGlass, HiArrowLongRight, HiCalendarDays, HiTag } from 'react-icons/hi2';
 import { usePageContent } from '../context/PageContentContext';
+import SeoHead from '../components/SeoHead';
 
 const Blogs = () => {
   const { blogs } = usePageContent();
@@ -28,6 +29,7 @@ const Blogs = () => {
 
   return (
     <>
+      <SeoHead slug="blogs" />
       {/* Hero Banner */}
       <section className="relative h-64 md:h-80 overflow-hidden">
         <img

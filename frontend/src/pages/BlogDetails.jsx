@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { HiArrowLongLeft, HiCalendarDays, HiTag, HiShare } from 'react-icons/hi2';
 import { FaFacebookF, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
 import { usePageContent } from '../context/PageContentContext';
+import SeoHead from '../components/SeoHead';
 
 const BlogDetails = () => {
   const { slug } = useParams();
@@ -17,7 +18,11 @@ const BlogDetails = () => {
 
   return (
     <>
-      <title>{blog.title} | Cresta Foods</title>
+      <SeoHead
+        slug={`blogs/${blog.slug}`}
+        fallbackTitle={`${blog.title} | Cresta Foods`}
+        fallbackDescription={blog.excerpt}
+      />
 
       {/* Hero */}
       <section className="relative h-48 sm:h-[40vh] min-h-[250px] overflow-hidden flex items-end">

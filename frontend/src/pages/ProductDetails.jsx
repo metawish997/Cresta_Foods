@@ -13,6 +13,7 @@ import {
   HiOutlineEnvelope
 } from 'react-icons/hi2';
 import { usePageContent } from '../context/PageContentContext';
+import SeoHead from '../components/SeoHead';
 
 const ProductDetails = () => {
   const { slug } = useParams();
@@ -73,7 +74,11 @@ const ProductDetails = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 font-body text-gray-800 dark:text-gray-200 pb-6 sm:pb-20 lg:pb-24">
-      <title>{product.name} | Cresta Foods</title>
+      <SeoHead
+        slug={`products/${product.slug}`}
+        fallbackTitle={`${product.name} | Cresta Foods`}
+        fallbackDescription={product.shortDesc || product.description}
+      />
 
       {/* Hero Banner */}
       <section className="relative h-48 sm:h-[40vh] min-h-[250px] overflow-hidden flex items-end">

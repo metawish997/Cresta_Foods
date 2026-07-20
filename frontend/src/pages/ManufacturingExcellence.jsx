@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import SeoHead from '../components/SeoHead';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { useLocation } from 'react-router-dom';
@@ -116,6 +117,7 @@ const ManufacturingExcellence = () => {
 
   return (
     <>
+      <SeoHead slug="manufacturing-excellence" />
       {/* Hero */}
       <section className="relative h-80 md:h-96 overflow-hidden">
         <img

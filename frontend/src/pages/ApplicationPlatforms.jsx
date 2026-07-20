@@ -31,6 +31,7 @@ import seasoningSpices from '../assets/images/application-platform/seasoning-spi
 import EditableText from '../components/EditableText';
 import DynamicSections from '../components/DynamicSections';
 import { useAuth } from '../context/AuthContext';
+import SeoHead from '../components/SeoHead';
 
 const defaultSupportItems = [
   { id: 1, text: 'Certificate of Analysis (COA) provided with every shipment' },
@@ -102,7 +103,7 @@ const ApplicationPlatforms = () => {
 
   return (
     <>
-      <title>Application Platforms | Cresta Foods - Guar Gum &amp; Onion Uses</title>
+      <SeoHead slug="application-platforms" />
 
       {/* Content wrapper for PDF */}
       <div ref={contentRef} className="bg-white dark:bg-gray-900 pb-10">

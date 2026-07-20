@@ -11,6 +11,7 @@ import EditableText from '../components/EditableText';
 import { usePageContent } from '../context/PageContentContext';
 import DynamicSections from '../components/DynamicSections';
 import api from '../utils/api';
+import SeoHead from '../components/SeoHead';
 
 const initialFaqs = [
   {
@@ -82,6 +83,7 @@ const Contact = () => {
 
   return (
     <>
+      <SeoHead slug="contact" />
       {/* Hero */}
       <section className="relative h-48 sm:h-[40vh] min-h-[250px] overflow-hidden flex items-end">
         <img

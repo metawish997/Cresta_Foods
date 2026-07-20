@@ -11,11 +11,12 @@ import ManufacturingPlants from '../components/home/ManufacturingPlants';
 import AlternativeSection from '../components/home/AlternativeSection';
 import ContactCTA from '../components/home/ContactCTA';
 import DynamicSections from '../components/DynamicSections';
+import SeoHead from '../components/SeoHead';
 
 const Home = () => {
   return (
     <>
-      <title>Cresta Foods | Premium Guar Gum & Dehydrated Onion Exporters from India</title>
+      <SeoHead slug="home" />
       <HeroSlider />
       <SpecificationDriven />
       

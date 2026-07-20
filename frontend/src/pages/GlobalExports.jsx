@@ -6,6 +6,7 @@ import { Plus, Trash2, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import EditableText from '../components/EditableText';
 import DynamicSections from '../components/DynamicSections';
+import SeoHead from '../components/SeoHead';
 
 // ─── Quality Assurance Default Data ──────────────────────────────────────────
 const defaultQualitySteps = [
@@ -232,7 +233,7 @@ const GlobalExports = () => {
 
   return (
     <>
-      <title>Global Exports | Cresta Foods — Quality Assurance &amp; Packaging</title>
+      <SeoHead slug="global-exports" />
 
       {/* Hero */}
       <section className="relative h-48 sm:h-[40vh] min-h-[250px] overflow-hidden flex items-end">

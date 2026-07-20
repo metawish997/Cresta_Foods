@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import SeoHead from '../components/SeoHead';
 
 // Images removed because we fetch from API
 
@@ -63,6 +64,7 @@ export default function Products() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-gray-900 text-slate-700 dark:text-gray-200 font-sans">
+      <SeoHead slug="products" />
       {/* Header Banner with Image */}
       <div className="relative pt-24 pb-12 md:pt-32 md:pb-20 border-b border-slate-200 overflow-hidden">
         {/* Background Image Placeholder */}

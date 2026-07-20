@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import DynamicSections from '../components/DynamicSections';
 import EditableText from '../components/EditableText';
+import SeoHead from '../components/SeoHead';
 
 
 const values = [
@@ -58,7 +59,7 @@ const stats = [
 const WhyUs = () => {
   return (
     <>
-      <title>Why Us | Cresta Foods — Premium Guar Gum & Dehydrated Onion Exporters</title>
+      <SeoHead slug="about" />
 
       {/* Hero */}
       <section className="relative h-48 sm:h-[40vh] min-h-[250px] overflow-hidden flex items-end">

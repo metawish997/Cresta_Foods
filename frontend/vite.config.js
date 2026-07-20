@@ -13,15 +13,16 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:5001',
+        target: 'https://crestafoods.in',
+        //  || http://localhost:5001
         changeOrigin: true,
       },
       '/uploads': {
-        target: 'http://localhost:5001',
+        target: 'https://crestafoods.in',
         changeOrigin: true,
       },
       '/socket.io': {
-        target: 'http://localhost:5001',
+        target: 'https://crestafoods.in',
         ws: true,
         changeOrigin: true,
       },

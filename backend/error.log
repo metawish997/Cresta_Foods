@@ -1,0 +1,21 @@
+2026-07-08T06:42:05.845Z\nCastError: Cast to string failed for value "{}" (type Object) at path "image"
+    at SchemaString.cast (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\schema\string.js:611:11)
+    at SchemaType.applySetters (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\schemaType.js:1288:12)
+    at SchemaString.castForQuery (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\schema\string.js:705:17)
+    at castUpdateVal (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\helpers\query\castUpdate.js:633:19)
+    at walkUpdatePath (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\helpers\query\castUpdate.js:333:22)
+    at castUpdate (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\helpers\query\castUpdate.js:144:7)
+    at model.Query._castUpdate (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\query.js:4874:10)
+    at model.Query._findOneAndUpdate (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\query.js:3497:23)
+    at model.Query.exec (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\query.js:4627:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n\n2026-07-08T06:42:27.645Z\nCastError: Cast to string failed for value "{}" (type Object) at path "image"
+    at SchemaString.cast (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\schema\string.js:611:11)
+    at SchemaType.applySetters (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\schemaType.js:1288:12)
+    at SchemaString.castForQuery (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\schema\string.js:705:17)
+    at castUpdateVal (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\helpers\query\castUpdate.js:633:19)
+    at walkUpdatePath (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\helpers\query\castUpdate.js:333:22)
+    at castUpdate (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\helpers\query\castUpdate.js:144:7)
+    at model.Query._castUpdate (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\query.js:4874:10)
+    at model.Query._findOneAndUpdate (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\query.js:3497:23)
+    at model.Query.exec (D:\demo_uis\CrestaFoods\backend\node_modules\mongoose\lib\query.js:4627:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n\n

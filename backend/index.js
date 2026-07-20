@@ -84,14 +84,28 @@ app.get('/api/health', (req, res) => {
 });
 
 // ─── Serve Frontend Static Files & Fallback ───────────────────────────────────
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
+// app.get('{/*splat}', (req, res) => {
+//   const indexPath = path.join(__dirname, 'public', 'index.html');
+//   if (fs.existsSync(indexPath)) {
+//     res.sendFile(indexPath);
+//   } else {
+//     res.send('API Server Running... (Frontend build files not found in public/)');
+//   }
+// });
+
+// ─── Serve Frontend Static Files & Fallback ───────────────────────────────────
+// 1. Static files public/dist se serve hongi
+app.use(express.static(path.join(__dirname, 'public', 'dist')));
+
+// 2. Fallback route index.html (public/dist/index.html) ko serve karega
 app.get('{/*splat}', (req, res) => {
-  const indexPath = path.join(__dirname, 'public', 'index.html');
+  const indexPath = path.join(__dirname, 'public', 'dist', 'index.html');
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.send('API Server Running... (Frontend build files not found in public/)');
+    res.send('API Server Running... (Frontend build files not found in public/dist/)');
   }
 });
 

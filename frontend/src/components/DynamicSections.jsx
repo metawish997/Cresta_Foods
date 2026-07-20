@@ -4,6 +4,7 @@ import { Plus, Trash2, GripVertical, Save, ChevronUp, ChevronDown, Settings, Ima
 import { usePageContent } from '../context/PageContentContext';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import api from '../utils/api';
 
 const DynamicSections = ({ slotId = 'default' }) => {
   const { contentMap, updateContent } = usePageContent();
@@ -36,20 +37,14 @@ const DynamicSections = ({ slotId = 'default' }) => {
   const saveToDatabase = async (updatedSections) => {
     setIsSaving(true);
     try {
-      const token = localStorage.getItem('token');
       const pathSlug = location.pathname.split('/').filter(Boolean).pop();
       const slug = pathSlug || 'home';
       
-      const res = await fetch(`http://localhost:5001/api/page-content/${slug}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ [contentKey]: JSON.stringify(updatedSections) })
+      const res = await api.post(`/page-content/${slug}`, {
+        [contentKey]: JSON.stringify(updatedSections)
       });
       
-      if (res.ok) {
+      if (res.status === 200) {
         if (updateContent) {
           updateContent(contentKey, JSON.stringify(updatedSections));
         }
@@ -248,18 +243,10 @@ const DynamicSections = ({ slotId = 'default' }) => {
                               try {
                                 const formData = new FormData();
                                 formData.append('image', file);
-                                const token = localStorage.getItem('token');
-                                const res = await fetch('http://localhost:5001/api/upload/image', {
-                                  method: 'POST',
-                                  headers: { 'Authorization': `Bearer ${token}` },
-                                  body: formData
-                                });
-                                const data = await res.json();
+                                const res = await api.post('/upload/image', formData);
+                                const data = res.data;
                                 if (data.url) {
                                   let newSrc = data.url;
-                                  if (newSrc.startsWith('/uploads/')) {
-                                    newSrc = `http://localhost:5001${newSrc}`;
-                                  }
                                   const updated = sections.map(s => s.id === section.id ? { ...s, image: newSrc } : s);
                                   setSections(updated);
                                   saveToDatabase(updated);

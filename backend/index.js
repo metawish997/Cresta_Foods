@@ -83,20 +83,15 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Cresta Foods API is running', timestamp: new Date().toISOString() });
 });
 
-// ─── 404 Handler for API ──────────────────────────────────────────────────────
-app.use('/api', (req, res) => {
-  res.status(404).json({ message: `Route ${req.method} ${req.path} not found` });
-});
-
 // ─── Serve Frontend Static Files & Fallback ───────────────────────────────────
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('*', (req, res) => {
+app.get('{/*splat}', (req, res) => {
   const indexPath = path.join(__dirname, 'public', 'index.html');
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.send('API Server Running...');
+    res.send('API Server Running... (Frontend build files not found in public/)');
   }
 });
 

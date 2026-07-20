@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Image as ImageIcon } from 'lucide-react';
 import { usePageContent } from '../context/PageContentContext';
 import { useAuth } from '../context/AuthContext';
+import api from '../utils/api';
 
 const EditableImage = ({ id, defaultSrc, alt = '', className = '', style = {}, wrapperClassName = 'inline-block' }) => {
   const { contentMap, updateContent } = usePageContent();
@@ -30,54 +31,25 @@ const EditableImage = ({ id, defaultSrc, alt = '', className = '', style = {}, w
     setSavedStatus('saving');
     
     try {
-      const token = localStorage.getItem('token');
       const pathSlug = location.pathname.split('/').filter(Boolean).pop();
       const slug = pathSlug || 'home';
       
       const formData = new FormData();
       formData.append('image', file);
       
-      const uploadRes = await fetch(`http://localhost:5001/api/upload/image`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData
-      });
+      const uploadRes = await api.post('/upload/image', formData);
+      let newSrc = uploadRes.data.url;
       
-      if (uploadRes.ok) {
-        const data = await uploadRes.json();
-        let newSrc = data.url;
-        // if it's a relative path, make it absolute for the frontend or handle it as is
-        // CrestaFoods frontend can probably handle relative paths if we prepend the backend URL or if it's served together
-        if (newSrc.startsWith('/uploads/')) {
-          newSrc = `http://localhost:5001${newSrc}`; // Use full URL for the editor preview
-        }
-        
-        setSrc(newSrc);
+      setSrc(newSrc);
 
-        // Now save this URL to page-content
-        const saveRes = await fetch(`http://localhost:5001/api/page-content/${slug}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ [id]: newSrc })
-        });
-        
-        if (saveRes.ok) {
-          if (updateContent) {
-            updateContent(id, newSrc);
-          }
-          setSavedStatus('saved');
-          setTimeout(() => setSavedStatus(''), 2000);
-        } else {
-          setSavedStatus('error');
-        }
-      } else {
-        setSavedStatus('error');
+      // Now save this URL to page-content
+      await api.post(`/page-content/${slug}`, { [id]: newSrc });
+      
+      if (updateContent) {
+        updateContent(id, newSrc);
       }
+      setSavedStatus('saved');
+      setTimeout(() => setSavedStatus(''), 2000);
     } catch (err) {
       console.error(err);
       setSavedStatus('error');

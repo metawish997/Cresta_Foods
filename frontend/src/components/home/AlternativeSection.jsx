@@ -59,6 +59,17 @@ const AlternativeSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 xl:gap-8">
           {displayProducts.map((cat, i) => {
             const imageUrl = cat.image ? (cat.image.startsWith('http') ? cat.image : `/uploads/${cat.image}`) : '';
+            
+            let displaySpecs = [];
+            if (cat.specifications && cat.specifications.length > 0) {
+              displaySpecs = cat.specifications.slice(0, 4);
+            } else if (cat.specificationTable?.rows && cat.specificationTable.rows.length > 0) {
+              displaySpecs = cat.specificationTable.rows.slice(0, 4).map(row => ({
+                label: row[0] || '',
+                value: row.slice(1).filter(Boolean).join(' / ')
+              }));
+            }
+
             return (
             <motion.div
               key={cat._id || i}
@@ -102,9 +113,9 @@ const AlternativeSection = () => {
                 )}
 
                 {/* Specs Grid */}
-                {cat.specifications && cat.specifications.length > 0 && (
+                {displaySpecs.length > 0 && (
                   <div className="grid grid-cols-2 gap-2 mb-4">
-                    {cat.specifications.slice(0, 4).map((spec, idx) => (
+                    {displaySpecs.map((spec, idx) => (
                       <div key={idx} className="bg-[#fcfcfc] dark:bg-gray-700/40 p-2 xl:p-2.5 rounded-lg border border-gray-50 dark:border-gray-600">
                         <p className="text-[8.5px] text-gray-400 dark:text-gray-400 uppercase tracking-widest mb-0.5 line-clamp-1">
                           {spec.label}

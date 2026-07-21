@@ -90,7 +90,7 @@ const Footer = () => {
               />
             </Link>
 
-            <EditableText 
+            <EditableText
               id="footer_description"
               defaultText="Exporters of Guar Gum Hydrocolloids and Dehydrated Onion Products from India. APEDA registered, sourcing from FSSC 22000 certified mills. Exporting globally from Mundra Port."
               className="text-[11px] sm:text-sm md:text-[15px] text-gray-500 dark:text-gray-400 leading-relaxed mb-5 sm:mb-6 max-w-sm block"
@@ -137,21 +137,23 @@ const Footer = () => {
                       <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </a>
                     {isEditMode && (
-                      <div className="absolute top-10 left-0 bg-white dark:bg-gray-800 p-2 shadow-xl border border-gray-200 dark:border-gray-700 rounded-lg z-50 hidden group-hover/social:flex flex-col gap-2 min-w-[150px]">
-                        <select 
-                          value={social.icon} 
-                          onChange={e => updateItem({ icon: e.target.value })}
-                          className="text-xs p-1 border rounded"
-                        >
-                          {Object.keys(iconMap).map(k => <option key={k} value={k}>{k}</option>)}
-                        </select>
-                        <input 
-                          type="text" 
-                          value={social.href} 
-                          onChange={e => updateItem({ href: e.target.value })}
-                          placeholder="Link URL" 
-                          className="text-xs p-1 border rounded"
-                        />
+                      <div className="absolute top-full left-0 pt-2 z-50 invisible opacity-0 group-hover/social:visible group-hover/social:opacity-100 transition-all duration-300 [transition-delay:1s] group-hover/social:[transition-delay:0s]">
+                        <div className="bg-white dark:bg-gray-800 p-2 shadow-xl border border-gray-200 dark:border-gray-700 rounded-lg flex flex-col gap-2 min-w-[150px]">
+                          <select
+                            value={social.icon}
+                            onChange={e => updateItem({ icon: e.target.value })}
+                            className="text-xs p-1 border rounded"
+                          >
+                            {Object.keys(iconMap).map(k => <option key={k} value={k}>{k}</option>)}
+                          </select>
+                          <input
+                            type="text"
+                            value={social.href}
+                            onChange={e => updateItem({ href: e.target.value })}
+                            placeholder="Link URL"
+                            className="text-xs p-1 border rounded focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          />
+                        </div>
                       </div>
                     )}
                   </div>

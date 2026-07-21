@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { HiArrowLongRight, HiCheckBadge } from 'react-icons/hi2';
-import { Plus, Trash2, X } from 'lucide-react';
+import { Plus, Trash2, X, ShieldCheck, FileCheck, Award, ClipboardCheck, Globe, Star, BadgeCheck, CheckCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import EditableText from '../components/EditableText';
+import EditableList from '../components/EditableList';
+import EditableImage from '../components/EditableImage';
 import DynamicSections from '../components/DynamicSections';
 import SeoHead from '../components/SeoHead';
 
@@ -52,15 +54,15 @@ const defaultQualitySteps = [
   },
 ];
 
-const qualityCerts = [
-  { name: 'FSSAI', desc: 'Food Safety & Standards Authority of India' },
-  { name: 'FSSC 22000', desc: 'Food Safety System Certification' },
-  { name: 'ISO 22000', desc: 'Food Safety Management System' },
-  { name: 'HACCP', desc: 'Hazard Analysis Critical Control Points' },
-  { name: 'APEDA', desc: 'Agricultural & Processed Food Products Export Development Authority' },
-  { name: 'Halal', desc: 'Halal Certified' },
-  { name: 'Kosher', desc: 'Kosher Certified' },
-  { name: 'BRCGS', desc: 'British Retail Consortium Global Standards' },
+const defaultCerts = [
+  { id: '1', name: 'FSSAI', desc: 'Food Safety & Standards Authority of India' },
+  { id: '2', name: 'FSSC 22000', desc: 'Food Safety System Certification' },
+  { id: '3', name: 'ISO 22000', desc: 'Food Safety Management System' },
+  { id: '4', name: 'HACCP', desc: 'Hazard Analysis Critical Control Points' },
+  { id: '5', name: 'APEDA', desc: 'Agricultural & Processed Food Products Export Development Authority' },
+  { id: '6', name: 'Halal', desc: 'Halal Certified' },
+  { id: '7', name: 'Kosher', desc: 'Kosher Certified' },
+  { id: '8', name: 'BRCGS', desc: 'British Retail Consortium Global Standards' },
 ];
 
 // ─── Default packaging card data ──────────────────────────────────────────────
@@ -469,22 +471,27 @@ const GlobalExports = () => {
               <EditableText id="globalexports_certs_title" defaultText="Certifications & Compliance" as="h2" className="font-heading font-bold text-xl sm:text-2xl text-gray-800 dark:text-white uppercase tracking-widest mb-2 sm:mb-3" />
               <EditableText id="globalexports_certs_desc" defaultText="Our supply chain partners hold the following certifications" as="p" className="text-gray-600 dark:text-gray-400 text-[13px] sm:text-[14px] block" />
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-3 sm:gap-4 mb-10 sm:mb-16">
-              {qualityCerts.map((cert, i) => (
-                <motion.div
-                  key={cert.name}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.04 }}
-                  className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 border border-transparent dark:border-gray-700 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:shadow-none text-center hover:-translate-y-1 transition-all duration-300"
-                >
-                  <HiCheckBadge className="w-5 h-5 sm:w-6 sm:h-6 text-primary-500 mx-auto mb-2 sm:mb-3" />
-                  <div className="font-heading font-bold text-gray-900 dark:text-white text-[12px] sm:text-[13px] uppercase tracking-widest">{cert.name}</div>
-                  <div className="text-[11px] sm:text-[12px] text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">{cert.desc}</div>
-                </motion.div>
-              ))}
-            </div>
+            <EditableList
+              id="globalexports_certs_list"
+              listContainerClass="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-3 sm:gap-4 mb-10 sm:mb-16"
+              defaultItems={defaultCerts}
+              newItemTemplate={{ id: Date.now().toString(), name: 'NEW CERT', desc: 'Description here' }}
+              renderItem={(cert, i) => (
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 border border-transparent dark:border-gray-700 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:shadow-none text-center hover:-translate-y-1 transition-all duration-300 h-full flex flex-col items-center justify-center">
+                  <EditableImage
+                    id={`globalexports_cert_img_${cert.id}`}
+                    defaultSrc="https://placehold.co/100x100/e2e8f0/475569?text=Icon"
+                    className="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto mb-3 sm:mb-4"
+                  />
+                  <div className="font-heading font-bold text-gray-900 dark:text-white text-[14px] sm:text-[16px] uppercase tracking-widest mt-auto">
+                    <EditableText id={`globalexports_cert_name_${cert.id}`} defaultText={cert.name} as="span" />
+                  </div>
+                  <div className="text-[12px] sm:text-[13px] text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">
+                    <EditableText id={`globalexports_cert_desc_${cert.id}`} defaultText={cert.desc} as="span" />
+                  </div>
+                </div>
+              )}
+            />
 
             <DynamicSections slotId="globalexports-qa-certs" />
 

@@ -13,18 +13,18 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://crestafoods.in', // Local Backend URI
-        // target: 'http://localhost:5001', // Production URI
+        // target: 'https://crestafoods.in', // Local Backend URI
+        target: 'http://localhost:5001', // Production URI
         changeOrigin: true,
       },
       '/uploads': {
-        target: 'https://crestafoods.in', // Local Backend URI
-        // target: 'https://crestafoods.in', // Production URI
+        // target: 'https://crestafoods.in', // Local Backend URI
+        target: 'http://localhost:5001', // Production URI
         changeOrigin: true,
       },
       '/socket.io': {
-        target: 'https://crestafoods.in', // Local Backend URI
-        // target: 'https://crestafoods.in', // Production URI
+        // target: 'https://crestafoods.in', // Local Backend URI
+        target: 'http://localhost:5001', // Production URI
         ws: true,
         changeOrigin: true,
       },

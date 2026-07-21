@@ -15,9 +15,9 @@ const ArrayField = ({ label, value, onChange, placeholder }) => {
   };
   const remove = (idx) => onChange(value.filter((_, i) => i !== idx));
   return (
-    <div className="admin-form-group">
-      <label className="admin-label">{label}</label>
-      <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+    <div className="admin-form-group" style={{ border: '1px solid #E5E7EB', padding: '16px', borderRadius: '8px', marginBottom: '20px', background: '#fff' }}>
+      <label className="admin-label" style={{ fontSize: '14px', fontWeight: 'bold', borderBottom: '1px solid #E5E7EB', paddingBottom: '8px', marginBottom: '12px', display: 'block' }}>{label}</label>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
         <input
           className="admin-input"
           value={input}
@@ -29,9 +29,9 @@ const ArrayField = ({ label, value, onChange, placeholder }) => {
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
         {value.map((item, i) => (
-          <span key={i} style={{ background: '#F3F4F6', borderRadius: 20, padding: '3px 10px', fontSize: 12, display: 'flex', alignItems: 'center', gap: 4 }}>
+          <span key={i} style={{ background: '#F3F4F6', borderRadius: 20, padding: '4px 12px', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
             {item}
-            <button type="button" onClick={() => remove(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9CA3AF', fontSize: 14 }}>×</button>
+            <button type="button" onClick={() => remove(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9CA3AF', fontSize: 16 }}>×</button>
           </span>
         ))}
       </div>
@@ -42,24 +42,74 @@ const ArrayField = ({ label, value, onChange, placeholder }) => {
 const ObjectArrayField = ({ label, value = [], onChange, key1, key2, placeholder1, placeholder2 }) => {
   const [input1, setInput1] = useState('');
   const [input2, setInput2] = useState('');
+  const [showInfo, setShowInfo] = useState(false);
+  const fileInputRef = useRef(null);
+
   const add = () => {
     if (!input1.trim() || !input2.trim()) return;
     onChange([...value, { [key1]: input1.trim(), [key2]: input2.trim() }]);
     setInput1(''); setInput2('');
   };
   const remove = (idx) => onChange(value.filter((_, i) => i !== idx));
+
+  const handleImportCSV = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target.result;
+      const lines = text.split(/\r?\n/);
+      const newItems = [];
+      lines.forEach(line => {
+        const parts = line.split(',');
+        if (parts.length >= 2) {
+          const k1 = parts[0].trim().replace(/^"|"$/g, '');
+          const k2 = parts.slice(1).join(',').trim().replace(/^"|"$/g, '');
+          if (k1 && k2) {
+            newItems.push({ [key1]: k1, [key2]: k2 });
+          }
+        }
+      });
+      if (newItems.length > 0) {
+        onChange([...value, ...newItems]);
+      }
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+    reader.readAsText(file);
+  };
+
   return (
-    <div className="admin-form-group">
-      <label className="admin-label">{label}</label>
-      <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+    <div className="admin-form-group" style={{ border: '1px solid #E5E7EB', padding: '16px', borderRadius: '8px', marginBottom: '20px', background: '#fff' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #E5E7EB', paddingBottom: '8px', marginBottom: '12px' }}>
+        <label className="admin-label" style={{ fontSize: '14px', fontWeight: 'bold', margin: 0 }}>{label}</label>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button type="button" onClick={() => setShowInfo(!showInfo)} style={{ background: '#E5E7EB', border: 'none', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', color: '#4B5563' }} title="Show Format Info">
+            !
+          </button>
+          <input type="file" accept=".csv" ref={fileInputRef} style={{ display: 'none' }} onChange={handleImportCSV} />
+          <button type="button" className="admin-btn admin-btn-sm" style={{ background: '#10B981', color: 'white', border: 'none', padding: '4px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }} onClick={() => fileInputRef.current?.click()}>
+            📥 Import CSV
+          </button>
+        </div>
+      </div>
+      {showInfo && (
+        <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '10px 14px', borderRadius: '6px', marginBottom: '12px', fontSize: '13px', color: '#1E3A8A' }}>
+          <strong>CSV Format Expected:</strong> Upload a <code>.csv</code> file with exactly two columns per row.
+          <ul style={{ margin: '6px 0 0 20px', padding: 0 }}>
+            <li><strong>Column 1:</strong> {placeholder1.replace('e.g. ', '')}</li>
+            <li><strong>Column 2:</strong> {placeholder2.replace('e.g. ', '')}</li>
+          </ul>
+        </div>
+      )}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
         <input className="admin-input" value={input1} onChange={(e) => setInput1(e.target.value)} placeholder={placeholder1} />
         <input className="admin-input" value={input2} onChange={(e) => setInput2(e.target.value)} placeholder={placeholder2} onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), add())} />
         <button type="button" className="admin-btn admin-btn-secondary" onClick={add}>Add</button>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {value.map((item, i) => (
-          <div key={i} style={{ background: '#F3F4F6', borderRadius: 8, padding: '8px 12px', fontSize: 13, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div><strong>{item[key1]}:</strong> {item[key2]}</div>
+          <div key={i} style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 8, padding: '10px 14px', fontSize: 13, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div><strong style={{ color: '#374151' }}>{item[key1]}:</strong> <span style={{ color: '#4B5563' }}>{item[key2]}</span></div>
             <button type="button" onClick={() => remove(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#EF4444', fontWeight: 'bold' }}>Delete</button>
           </div>
         ))}
@@ -68,8 +118,10 @@ const ObjectArrayField = ({ label, value = [], onChange, key1, key2, placeholder
   );
 };
 
-const TableEditor = ({ label, value = { headers: [], rows: [] }, onChange }) => {
+const TableEditor = ({ label, value = { headers: [], rows: [], tableName: '' }, onChange }) => {
   const [headerInput, setHeaderInput] = useState('');
+  const [showInfo, setShowInfo] = useState(false);
+  const fileInputRef = useRef(null);
 
   const addHeader = () => {
     if (!headerInput.trim()) return;
@@ -80,7 +132,7 @@ const TableEditor = ({ label, value = { headers: [], rows: [] }, onChange }) => 
   const removeHeader = (idx) => {
     const newHeaders = value.headers.filter((_, i) => i !== idx);
     const newRows = value.rows.map(row => row.filter((_, i) => i !== idx));
-    onChange({ headers: newHeaders, rows: newRows });
+    onChange({ ...value, headers: newHeaders, rows: newRows });
   };
 
   const addRow = () => onChange({ ...value, rows: [...value.rows, new Array(value.headers.length).fill('')] });
@@ -93,9 +145,52 @@ const TableEditor = ({ label, value = { headers: [], rows: [] }, onChange }) => 
 
   const removeRow = (rIdx) => onChange({ ...value, rows: value.rows.filter((_, i) => i !== rIdx) });
 
+  const handleImportCSV = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target.result;
+      const lines = text.split(/\r?\n/).filter(line => line.trim());
+      if (lines.length > 0) {
+        const newRows = [];
+        const numCols = value.headers.length > 0 ? value.headers.length : 1;
+        for (let i = 0; i < lines.length; i++) {
+          const parts = lines[i].split(',').map(p => p.trim().replace(/^"|"$/g, ''));
+          const row = Array.from({ length: numCols }, (_, idx) => parts[idx] || '');
+          newRows.push(row);
+        }
+        onChange({ ...value, rows: [...value.rows, ...newRows] });
+      }
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+    reader.readAsText(file);
+  };
+
   return (
-    <div className="admin-form-group">
-      <label className="admin-label">{label}</label>
+    <div className="admin-form-group" style={{ border: '1px solid #E5E7EB', padding: '16px', borderRadius: '8px', marginBottom: '20px', background: '#fff' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #E5E7EB', paddingBottom: '8px', marginBottom: '12px' }}>
+        <input 
+          value={value.tableName !== undefined ? value.tableName : label} 
+          onChange={e => onChange({ ...value, tableName: e.target.value })}
+          placeholder="Table Name (e.g. Food Grade Specifications Table)"
+          style={{ fontSize: '14px', fontWeight: 'bold', border: 'none', borderBottom: '1px dashed #9CA3AF', outline: 'none', width: '60%', background: 'transparent' }} 
+        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button type="button" onClick={() => setShowInfo(!showInfo)} style={{ background: '#E5E7EB', border: 'none', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', color: '#4B5563' }} title="Show Format Info">
+            !
+          </button>
+          <input type="file" accept=".csv" ref={fileInputRef} style={{ display: 'none' }} onChange={handleImportCSV} />
+          <button type="button" className="admin-btn admin-btn-sm" style={{ background: '#10B981', color: 'white', border: 'none', padding: '4px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }} onClick={() => fileInputRef.current?.click()}>
+            📥 Import CSV
+          </button>
+        </div>
+      </div>
+      {showInfo && (
+        <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '10px 14px', borderRadius: '6px', marginBottom: '12px', fontSize: '13px', color: '#1E3A8A' }}>
+          <strong>CSV Format Expected:</strong> Upload a <code>.csv</code> file containing <strong>only the data rows</strong> (no header row). The columns in your CSV will be matched to the {value.headers.length} columns currently added below.
+        </div>
+      )}
       <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 8, padding: 16 }}>
         <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
           <input className="admin-input" value={headerInput} onChange={e => setHeaderInput(e.target.value)} placeholder="New Column Name (e.g. 100 Mesh)" />
@@ -107,9 +202,9 @@ const TableEditor = ({ label, value = { headers: [], rows: [] }, onChange }) => 
               <thead>
                 <tr>
                   {value.headers.map((h, i) => (
-                    <th key={i}>{h} <button type="button" onClick={() => removeHeader(i)} style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer', marginLeft: 4 }}>×</button></th>
+                    <th key={i} style={{ background: '#E5E7EB' }}>{h} <button type="button" onClick={() => removeHeader(i)} style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer', marginLeft: 4 }}>×</button></th>
                   ))}
-                  <th style={{ width: 60 }}>Action</th>
+                  <th style={{ width: 60, background: '#E5E7EB' }}>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -120,7 +215,7 @@ const TableEditor = ({ label, value = { headers: [], rows: [] }, onChange }) => 
                         <input className="admin-input" style={{ padding: '6px 8px', minWidth: 100, fontSize: 13 }} value={row[cIdx] || ''} onChange={e => updateRow(rIdx, cIdx, e.target.value)} />
                       </td>
                     ))}
-                    <td style={{ padding: 4 }}><button type="button" onClick={() => removeRow(rIdx)} style={{ color: '#EF4444', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 'bold' }}>Del</button></td>
+                    <td style={{ padding: 4, textAlign: 'center' }}><button type="button" onClick={() => removeRow(rIdx)} style={{ color: '#EF4444', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 'bold' }}>Del</button></td>
                   </tr>
                 ))}
               </tbody>
@@ -146,7 +241,7 @@ const ProductEditor = () => {
     highlight: '', usageRecommendation: '', meta_title: '', meta_description: '', meta_keywords: '',
     storageGuidelines: '', technicalSpecText: '',
     specifications: [], keyProperties: [], whyChoose: [],
-    specificationTable: { headers: ['Specification', '100 Mesh', '200 Mesh'], rows: [] }
+    specificationTable: { tableName: 'Food Grade Specifications Table', headers: ['Specification', '100 Mesh', '200 Mesh'], rows: [] }
   });
   const [imagePreview, setImagePreview] = useState('');
   const [imageFile, setImageFile] = useState(null);
@@ -185,8 +280,8 @@ const ProductEditor = () => {
             keyProperties: p.keyProperties || [],
             whyChoose: p.whyChoose || [],
             specificationTable: p.specificationTable?.headers?.length > 0
-              ? p.specificationTable
-              : { headers: ['Specification', '100 Mesh', '200 Mesh'], rows: [] },
+              ? { tableName: p.specificationTable.tableName || 'Food Grade Specifications Table', headers: p.specificationTable.headers, rows: p.specificationTable.rows || [] }
+              : { tableName: 'Food Grade Specifications Table', headers: ['Specification', '100 Mesh', '200 Mesh'], rows: [] },
           });
           if (p.image) setImagePreview(p.image.startsWith('http') ? p.image : `/uploads/${p.image}`);
         })

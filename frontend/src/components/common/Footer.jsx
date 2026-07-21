@@ -1,12 +1,24 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  FaFacebookF, FaInstagram, FaLinkedinIn, FaXTwitter, FaYoutube,
+  FaFacebookF, FaInstagram, FaLinkedinIn, FaXTwitter, FaYoutube, FaTiktok, FaPinterest
 } from 'react-icons/fa6';
 import { HiEnvelope, HiPhone, HiMapPin } from 'react-icons/hi2';
 import { HiArrowUp } from 'react-icons/hi';
 import logoImg from '../../assets/images/logo/full-logo.png';
 import EditableText from '../EditableText';
+import EditableList from '../EditableList';
+import { useAuth } from '../../context/AuthContext';
+
+const iconMap = {
+  facebook: FaFacebookF,
+  instagram: FaInstagram,
+  linkedin: FaLinkedinIn,
+  twitter: FaXTwitter,
+  youtube: FaYoutube,
+  tiktok: FaTiktok,
+  pinterest: FaPinterest
+};
 
 const footerLinks = {
   company: [
@@ -51,6 +63,9 @@ const socials = [
 
 const Footer = () => {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  const location = useLocation();
+  const { user } = useAuth();
+  const isEditMode = new URLSearchParams(location.search).get('mode') === 'edit' && user && user.role === 'admin';
 
   return (
     <footer className="bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
@@ -82,33 +97,71 @@ const Footer = () => {
             />
 
             {/* Trust badges */}
-            <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-5 sm:mb-6">
-              {['FSSAI', 'APEDA', 'ISO 22000', 'Halal', 'Kosher'].map((cert) => (
-                <span key={cert} className="px-2 py-1 sm:px-2.5 sm:py-1 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-800 text-gray-500 dark:text-gray-400 text-[11px] sm:text-xs uppercase font-semibold tracking-wider rounded-md">
-                  {cert}
+            <EditableList
+              id="footer_certificates_list"
+              listContainerClass="flex flex-wrap gap-1.5 sm:gap-2 mb-5 sm:mb-6"
+              defaultItems={[
+                { id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }, { id: '5' }
+              ]}
+              newItemTemplate={{ id: Date.now().toString() }}
+              renderItem={(cert, idx) => (
+                <span className="px-2 py-1 sm:px-2.5 sm:py-1 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-800 text-gray-500 dark:text-gray-400 text-[11px] sm:text-xs uppercase font-semibold tracking-wider rounded-md">
+                  <EditableText id={`footer_cert_text_${cert.id}`} defaultText={['FSSAI', 'APEDA', 'ISO 22000', 'Halal', 'Kosher'][idx] || 'CERT'} as="span" />
                 </span>
-              ))}
-            </div>
+              )}
+            />
 
             {/* Social icons */}
-            <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
-              {socials.map(({ icon: Icon, href, label }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl border border-gray-100 dark:border-gray-800 hover:border-primary-200 hover:bg-primary-50 flex items-center justify-center text-gray-400 hover:text-primary-700 transition-all duration-300"
-                >
-                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </a>
-              ))}
-            </div>
+            <EditableList
+              id="footer_social_list"
+              listContainerClass="flex flex-wrap items-center gap-2 sm:gap-3 mb-6 sm:mb-8"
+              defaultItems={[
+                { id: '1', icon: 'facebook', href: 'https://facebook.com', label: 'Facebook' },
+                { id: '2', icon: 'instagram', href: 'https://instagram.com', label: 'Instagram' },
+                { id: '3', icon: 'linkedin', href: 'https://linkedin.com', label: 'LinkedIn' },
+                { id: '4', icon: 'twitter', href: 'https://twitter.com', label: 'X (Twitter)' },
+                { id: '5', icon: 'youtube', href: 'https://youtube.com', label: 'YouTube' },
+              ]}
+              newItemTemplate={{ id: Date.now().toString(), icon: 'facebook', href: 'https://...', label: 'New Social' }}
+              renderItem={(social, idx, updateItem) => {
+                const Icon = iconMap[social.icon] || FaFacebookF;
+                return (
+                  <div className="relative group/social flex items-center">
+                    <a
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={social.label}
+                      className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl border border-gray-100 dark:border-gray-800 hover:border-primary-200 hover:bg-primary-50 flex items-center justify-center text-gray-400 hover:text-primary-700 transition-all duration-300"
+                    >
+                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    </a>
+                    {isEditMode && (
+                      <div className="absolute top-10 left-0 bg-white dark:bg-gray-800 p-2 shadow-xl border border-gray-200 dark:border-gray-700 rounded-lg z-50 hidden group-hover/social:flex flex-col gap-2 min-w-[150px]">
+                        <select 
+                          value={social.icon} 
+                          onChange={e => updateItem({ icon: e.target.value })}
+                          className="text-xs p-1 border rounded"
+                        >
+                          {Object.keys(iconMap).map(k => <option key={k} value={k}>{k}</option>)}
+                        </select>
+                        <input 
+                          type="text" 
+                          value={social.href} 
+                          onChange={e => updateItem({ href: e.target.value })}
+                          placeholder="Link URL" 
+                          className="text-xs p-1 border rounded"
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              }}
+            />
 
             {/* Newsletter */}
             <div>
-              <p className="text-[11px] sm:text-[13px] font-semibold text-gray-900 dark:text-white mb-2 sm:mb-3 uppercase tracking-wider">Subscribe to our Newsletter</p>
+              <EditableText id="footer_newsletter_title" defaultText="Subscribe to our Newsletter" as="p" className="text-[11px] sm:text-[13px] font-semibold text-gray-900 dark:text-white mb-2 sm:mb-3 uppercase tracking-wider" />
               <div className="flex gap-2">
                 <input
                   type="email"

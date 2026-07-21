@@ -22,6 +22,7 @@ const productSchema = new mongoose.Schema(
     storageGuidelines: { type: String },
     technicalSpecText: { type: String },
     specificationTable: { 
+      tableName: { type: String },
       headers: { type: Array, default: [] },
       rows: { type: Array, default: [] }
     },

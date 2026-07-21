@@ -83,7 +83,7 @@ const ProductDetails = () => {
       {/* Hero Banner */}
       <section className="relative h-48 sm:h-[40vh] min-h-[250px] overflow-hidden flex items-end">
         <img
-          src={product.gallery?.[0] || product.image}
+          src={product.image}
           alt={product.name}
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -109,13 +109,13 @@ const ProductDetails = () => {
 
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <h1 className="font-heading font-bold text-2xl sm:text-3xl md:text-4xl text-gray-800 dark:text-white uppercase tracking-widest mb-4 sm:mb-6 leading-snug">{product.name}</h1>
-            
+
             {/* Related Products Quick Links */}
             {relatedProducts.length > 0 && (
               <div className="flex items-center gap-1.5 mt-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-widest text-gray-500 flex-shrink-0">Related:</span>
                 {relatedProducts.map(rp => (
-                  <button 
+                  <button
                     key={rp._id}
                     onClick={() => {
                       document.getElementById('related-products')?.scrollIntoView({ behavior: 'smooth' });
@@ -141,9 +141,9 @@ const ProductDetails = () => {
               <div className="w-full aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900 flex items-center justify-center relative border border-gray-100 dark:border-gray-800 mb-4">
                 <img src={product.image} alt={product.name} className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal drop-shadow-sm scale-110" />
               </div>
-              
+
               {/* Application Details Link */}
-              <Link 
+              <Link
                 to="/application-platforms"
                 className="w-full flex items-center justify-center gap-1.5 pt-1 text-[13px] font-semibold text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 transition-colors uppercase tracking-widest"
               >
@@ -262,7 +262,7 @@ const ProductDetails = () => {
                           <svg className="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                           </svg>
-                          Food Grade Specifications
+                          {product.specificationTable?.tableName}
                         </span>
                         <svg className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${isTableExpanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -271,10 +271,10 @@ const ProductDetails = () => {
                     )}
 
                     {(!product.techSpecDesc || isTableExpanded) && (
-                      <motion.div 
-                        initial={product.techSpecDesc ? { height: 0, opacity: 0 } : false} 
-                        animate={{ height: 'auto', opacity: 1 }} 
-                        exit={product.techSpecDesc ? { height: 0, opacity: 0 } : undefined} 
+                      <motion.div
+                        initial={product.techSpecDesc ? { height: 0, opacity: 0 } : false}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={product.techSpecDesc ? { height: 0, opacity: 0 } : undefined}
                         className="w-full max-w-full overflow-hidden"
                       >
                         {/* Dynamic Specification Table */}
@@ -321,7 +321,7 @@ const ProductDetails = () => {
 
                     <div className="mt-6 bg-primary-50 dark:bg-primary-900/20 p-4 sm:p-5 rounded-xl border border-primary-100 dark:border-primary-800/30">
                       <p className="text-[13px] sm:text-[14px] text-gray-700 dark:text-gray-300 leading-relaxed">
-                        <strong className="font-bold text-gray-900 dark:text-white uppercase tracking-wider text-[10px] sm:text-[13px] mr-2">Special Note:</strong> 
+                        <strong className="font-bold text-gray-900 dark:text-white uppercase tracking-wider text-[10px] sm:text-[13px] mr-2">Special Note:</strong>
                         Specifications may vary as per buyer requirements. ETO Treated / Steam Sterilized products can be provided upon request. Complete technical details and Certificate of Analysis (COA) will also be provided upon request.
                       </p>
                     </div>
@@ -450,19 +450,19 @@ const ProductDetails = () => {
               {relatedProducts.map(rp => {
                 const rpImage = rp.image ? (rp.image.startsWith('http') ? rp.image : `/uploads/${rp.image}`) : '';
                 return (
-                <Link to={`/products/${rp.slug}`} key={rp._id} className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full">
-                  <div className="aspect-[4/3] bg-gray-50 dark:bg-gray-900 relative overflow-hidden flex items-center justify-center p-3 sm:p-6 border-b border-gray-100 dark:border-gray-800">
-                    <img src={rpImage} alt={rp.name} className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal group-hover:scale-110 transition-transform duration-500" />
-                  </div>
-                  <div className="p-3 sm:p-5 flex flex-col flex-grow">
-                    <h3 className="font-heading font-bold text-[10px] sm:text-sm text-gray-900 dark:text-white uppercase tracking-widest mb-2 sm:mb-3 line-clamp-2 leading-tight group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                      {rp.name}
-                    </h3>
-                    <div className="mt-auto flex items-center text-[9px] sm:text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest group-hover:gap-1.5 transition-all">
-                      View Details <HiArrowLongRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all" />
+                  <Link to={`/products/${rp.slug}`} key={rp._id} className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full">
+                    <div className="aspect-[4/3] bg-gray-50 dark:bg-gray-900 relative overflow-hidden flex items-center justify-center p-3 sm:p-6 border-b border-gray-100 dark:border-gray-800">
+                      <img src={rpImage} alt={rp.name} className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal group-hover:scale-110 transition-transform duration-500" />
                     </div>
-                  </div>
-                </Link>
+                    <div className="p-3 sm:p-5 flex flex-col flex-grow">
+                      <h3 className="font-heading font-bold text-[10px] sm:text-sm text-gray-900 dark:text-white uppercase tracking-widest mb-2 sm:mb-3 line-clamp-2 leading-tight group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                        {rp.name}
+                      </h3>
+                      <div className="mt-auto flex items-center text-[9px] sm:text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-widest group-hover:gap-1.5 transition-all">
+                        View Details <HiArrowLongRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all" />
+                      </div>
+                    </div>
+                  </Link>
                 );
               })}
             </div>

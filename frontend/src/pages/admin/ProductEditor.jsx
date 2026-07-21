@@ -43,6 +43,8 @@ const ObjectArrayField = ({ label, value = [], onChange, key1, key2, placeholder
   const [input1, setInput1] = useState('');
   const [input2, setInput2] = useState('');
   const [showInfo, setShowInfo] = useState(false);
+  const [showBulk, setShowBulk] = useState(false);
+  const [bulkText, setBulkText] = useState('');
   const fileInputRef = useRef(null);
 
   const add = () => {
@@ -78,6 +80,38 @@ const ObjectArrayField = ({ label, value = [], onChange, key1, key2, placeholder
     reader.readAsText(file);
   };
 
+  const processBulk = () => {
+    if (!bulkText.trim()) return;
+    const lines = bulkText.split(/\r?\n/);
+    const newItems = [];
+    lines.forEach(line => {
+      // Match up to the first colon or hyphen for the key, the rest is value
+      const match = line.match(/^([^:-]+)[:\-]\s*(.*)$/);
+      if (match) {
+        const k1 = match[1].trim();
+        const k2 = match[2].trim();
+        if (k1 && k2) {
+          newItems.push({ [key1]: k1, [key2]: k2 });
+        }
+      } else {
+        // Fallback for comma separated just in case
+        const parts = line.split(',');
+        if (parts.length >= 2) {
+          const k1 = parts[0].trim();
+          const k2 = parts.slice(1).join(',').trim();
+          if (k1 && k2) {
+            newItems.push({ [key1]: k1, [key2]: k2 });
+          }
+        }
+      }
+    });
+    if (newItems.length > 0) {
+      onChange([...value, ...newItems]);
+    }
+    setBulkText('');
+    setShowBulk(false);
+  };
+
   return (
     <div className="admin-form-group" style={{ border: '1px solid #E5E7EB', padding: '16px', borderRadius: '8px', marginBottom: '20px', background: '#fff' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #E5E7EB', paddingBottom: '8px', marginBottom: '12px' }}>
@@ -85,6 +119,9 @@ const ObjectArrayField = ({ label, value = [], onChange, key1, key2, placeholder
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <button type="button" onClick={() => setShowInfo(!showInfo)} style={{ background: '#E5E7EB', border: 'none', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', color: '#4B5563' }} title="Show Format Info">
             !
+          </button>
+          <button type="button" className="admin-btn admin-btn-sm" style={{ background: '#3B82F6', color: 'white', border: 'none', padding: '4px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }} onClick={() => setShowBulk(!showBulk)}>
+            📋 Bulk Paste
           </button>
           <input type="file" accept=".csv" ref={fileInputRef} style={{ display: 'none' }} onChange={handleImportCSV} />
           <button type="button" className="admin-btn admin-btn-sm" style={{ background: '#10B981', color: 'white', border: 'none', padding: '4px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }} onClick={() => fileInputRef.current?.click()}>
@@ -99,6 +136,25 @@ const ObjectArrayField = ({ label, value = [], onChange, key1, key2, placeholder
             <li><strong>Column 1:</strong> {placeholder1.replace('e.g. ', '')}</li>
             <li><strong>Column 2:</strong> {placeholder2.replace('e.g. ', '')}</li>
           </ul>
+        </div>
+      )}
+      {showBulk && (
+        <div style={{ background: '#F3F4F6', border: '1px solid #D1D5DB', padding: '12px', borderRadius: '6px', marginBottom: '12px' }}>
+          <div style={{ fontSize: '12px', color: '#4B5563', marginBottom: '8px' }}>
+            Paste text lines formatted like <strong>Key: Value</strong> or <strong>Key - Value</strong>
+          </div>
+          <textarea 
+            className="admin-textarea" 
+            rows="5" 
+            value={bulkText} 
+            onChange={(e) => setBulkText(e.target.value)} 
+            placeholder={`e.g.\nSuperior thickening: Delivers consistent viscosity...\nFat replacement - Functions as a partial fat substitute...`}
+            style={{ marginBottom: '8px' }}
+          />
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+            <button type="button" className="admin-btn admin-btn-secondary admin-btn-sm" onClick={() => setShowBulk(false)}>Cancel</button>
+            <button type="button" className="admin-btn admin-btn-primary admin-btn-sm" onClick={processBulk}>➕ Process Text</button>
+          </div>
         </div>
       )}
       <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
@@ -240,7 +296,7 @@ const ProductEditor = () => {
     applications: [], certifications: [], packaging: '', specialNote: '',
     highlight: '', usageRecommendation: '', meta_title: '', meta_description: '', meta_keywords: '',
     storageGuidelines: '', technicalSpecText: '',
-    specifications: [], keyProperties: [], whyChoose: [],
+    specifications: [], keyProperties: [], whyChoose: [], whyPartner: [],
     specificationTable: { tableName: 'Food Grade Specifications Table', headers: ['Specification', '100 Mesh', '200 Mesh'], rows: [] }
   });
   const [imagePreview, setImagePreview] = useState('');
@@ -279,6 +335,7 @@ const ProductEditor = () => {
             specifications: p.specifications || [],
             keyProperties: p.keyProperties || [],
             whyChoose: p.whyChoose || [],
+            whyPartner: p.whyPartner || [],
             specificationTable: p.specificationTable?.headers?.length > 0
               ? { tableName: p.specificationTable.tableName || 'Food Grade Specifications Table', headers: p.specificationTable.headers, rows: p.specificationTable.rows || [] }
               : { tableName: 'Food Grade Specifications Table', headers: ['Specification', '100 Mesh', '200 Mesh'], rows: [] },
@@ -583,6 +640,17 @@ const ProductEditor = () => {
                 <label className="admin-label">Meta Keywords</label>
                 <input className="admin-input" name="meta_keywords" value={form.meta_keywords} onChange={handleChange} placeholder="keyword1, keyword2" />
               </div>
+            </div>
+
+            <div className="admin-card">
+              <div className="admin-card-title" style={{ marginBottom: 16 }}>Partner Section</div>
+              <ObjectArrayField
+                label="Why Partner with Cresta Foods"
+                value={form.whyPartner}
+                onChange={(val) => setForm((p) => ({ ...p, whyPartner: val }))}
+                key1="title" key2="desc"
+                placeholder1="e.g. Verified Quality" placeholder2="e.g. 100% QA pass..."
+              />
             </div>
           </div>
         </div>

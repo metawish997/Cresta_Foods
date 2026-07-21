@@ -98,6 +98,7 @@ router.post(
         subProducts: parseArrayField(req.body.subProducts),
         keyProperties: parseArrayField(req.body.keyProperties),
         whyChoose: parseArrayField(req.body.whyChoose),
+        whyPartner: parseArrayField(req.body.whyPartner),
         applications: parseArrayField(req.body.applications),
         certifications: parseArrayField(req.body.certifications),
         gallery: parseArrayField(req.body.gallery),
@@ -132,7 +133,7 @@ router.put(
       }
 
       // Parse JSON array fields
-      ['specifications', 'subProducts', 'keyProperties', 'whyChoose', 'applications', 'certifications', 'gallery'].forEach((key) => {
+      ['specifications', 'subProducts', 'keyProperties', 'whyChoose', 'whyPartner', 'applications', 'certifications', 'gallery'].forEach((key) => {
         if (req.body[key] !== undefined) updates[key] = parseArrayField(req.body[key]);
       });
       

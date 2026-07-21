@@ -45,7 +45,7 @@ const ProductDetails = () => {
     } : null,
     whySource: rawProduct.whyChoose && rawProduct.whyChoose.length > 0 ? rawProduct.whyChoose.map(w => `${w.title} - ${w.desc}`) : null,
     techSpecDesc: rawProduct.technicalSpecText || null,
-    whyPartner: rawProduct.whyChoose && rawProduct.whyChoose.length > 0 ? rawProduct.whyChoose.map(w => `${w.title}: ${w.desc}`) : null,
+    whyPartner: rawProduct.whyPartner && rawProduct.whyPartner.length > 0 ? rawProduct.whyPartner.map(w => `${w.title}: ${w.desc}`) : null,
     specificationTable: rawProduct.specificationTable || { headers: [], rows: [] },
     subProducts: rawProduct.subProducts || []
   } : null;
@@ -232,13 +232,13 @@ const ProductDetails = () => {
                     <div className="space-y-4 text-[13px] sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
                       {product.techSpecDesc.split('\n').filter(p => p.trim()).map((p, i) => <p key={i}>{p}</p>)}
                     </div>
-                    {product.whyPartner && (
+                    {product.whySource && product.whySource.length > 0 && (
                       <div className="mb-8">
                         <h3 className="font-bold text-[13px] sm:text-base text-gray-900 dark:text-white mb-3 underline">
                           Why Partner with Cresta Foods:
                         </h3>
                         <ul className="list-disc pl-5 space-y-2 text-[13px] sm:text-sm text-gray-700 dark:text-gray-300">
-                          {product.whyPartner.map((item, i) => (
+                          {product.whySource.map((item, i) => (
                             <li key={i}>{item}</li>
                           ))}
                         </ul>
@@ -382,15 +382,15 @@ const ProductDetails = () => {
           </div>
         )}
 
-        {/* Why Choose Section */}
-        {product.whySource && product.whySource.length > 0 ? (
+        {/* Why Partner Section */}
+        {product.whyPartner && product.whyPartner.length > 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 sm:p-8 lg:p-10 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:shadow-none border border-transparent dark:border-gray-700 mt-6 sm:mt-10">
             <h2 className="font-heading font-bold text-lg sm:text-2xl text-gray-800 dark:text-white mb-6">
               Why source {product.name.toLowerCase()} through Cresta Foods?
             </h2>
             <ul className="space-y-4 mb-8">
-              {product.whySource.map((item, idx) => {
-                const [title, desc] = item.includes(' - ') ? item.split(' - ') : [item, ''];
+              {product.whyPartner.map((item, idx) => {
+                const [title, desc] = item.includes(': ') ? item.split(': ') : [item, ''];
                 return (
                   <motion.li key={idx} initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.1 * idx }} className="flex items-start gap-3">
                     <div className="mt-0.5 flex-shrink-0 text-green-600 dark:text-green-400">
@@ -401,7 +401,7 @@ const ProductDetails = () => {
                     <div className="text-[13px] sm:text-sm text-gray-600 dark:text-gray-400 leading-snug">
                       {desc ? (
                         <>
-                          <strong className="font-semibold text-gray-800 dark:text-gray-200">{title}</strong> - {desc}
+                          <strong className="font-semibold text-gray-800 dark:text-gray-200">{title}</strong>: {desc}
                         </>
                       ) : (
                         item

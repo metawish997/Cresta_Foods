@@ -17,6 +17,7 @@ const productSchema = new mongoose.Schema(
     subProducts: { type: Array, default: [] },       // for onions
     keyProperties: { type: Array, default: [] },
     whyChoose: { type: Array, default: [] },         // [{title, desc}]
+    whyPartner: { type: Array, default: [] },        // [{title, desc}]
     applications: { type: Array, default: [] },      // string[]
     packaging: { type: String },
     storageGuidelines: { type: String },

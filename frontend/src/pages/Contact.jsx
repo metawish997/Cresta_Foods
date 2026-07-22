@@ -5,13 +5,26 @@ import {
   HiEnvelope, HiPhone, HiMapPin, HiPaperAirplane, HiChevronDown,
 } from 'react-icons/hi2';
 import {
-  FaFacebookF, FaInstagram, FaLinkedinIn, FaXTwitter,
+  FaFacebookF, FaInstagram, FaLinkedinIn, FaXTwitter, FaYoutube, FaTiktok, FaPinterest
 } from 'react-icons/fa6';
 import EditableText from '../components/EditableText';
+import EditableList from '../components/EditableList';
 import { usePageContent } from '../context/PageContentContext';
+import { useAuth } from '../context/AuthContext';
+import { useLocation } from 'react-router-dom';
 import DynamicSections from '../components/DynamicSections';
 import api from '../utils/api';
 import SeoHead from '../components/SeoHead';
+
+const iconMap = {
+  facebook: FaFacebookF,
+  instagram: FaInstagram,
+  linkedin: FaLinkedinIn,
+  twitter: FaXTwitter,
+  youtube: FaYoutube,
+  tiktok: FaTiktok,
+  pinterest: FaPinterest
+};
 
 const initialFaqs = [
   {
@@ -68,6 +81,10 @@ const Contact = () => {
   const { faqs } = usePageContent();
   const [form, setForm] = useState({ name: '', email: '', company: '', phone: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  
+  const location = useLocation();
+  const { user } = useAuth();
+  const isEditMode = new URLSearchParams(location.search).get('mode') === 'edit' && user && user.role === 'admin';
 
   const handleChange = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
   const handleSubmit = async (e) => {
@@ -127,20 +144,30 @@ const Contact = () => {
                   className="font-heading font-bold text-2xl sm:text-3xl md:text-4xl text-gray-800 dark:text-white uppercase tracking-widest mb-6 sm:mb-8 leading-snug"
                 />
                 <div className="divide-y divide-gray-100 dark:divide-gray-700/50 mb-8 sm:mb-10">
-                  <div className="flex items-start gap-3 sm:gap-4 pb-5 sm:pb-6">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
-                      <HiMapPin className="w-5 h-5 text-primary-500" />
-                    </div>
-                    <div>
-                      <EditableText id="contact_addr_label" defaultText="Address" as="p" className="text-[12px] sm:text-[13px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 sm:mb-2 block" />
-                      <EditableText
-                        id="contact_addr_value"
-                        defaultText="Cresta Foods, India Exporting from Mundra Port, Gujarat. Sourcing from Rajasthan (Guar Gum) and Mahuva, Gujarat (Dehydrated Onions)."
-                        as="p"
-                        className="text-[13px] sm:text-[14px] text-gray-600 dark:text-gray-300 leading-relaxed block"
-                      />
-                    </div>
-                  </div>
+                  <EditableList
+                    id="contact_addresses_list"
+                    listContainerClass="space-y-5 sm:space-y-6 pb-5 sm:pb-6"
+                    defaultItems={[
+                      { id: '1', title: 'Address', value: 'Cresta Foods, India Exporting from Mundra Port, Gujarat. Sourcing from Rajasthan (Guar Gum) and Mahuva, Gujarat (Dehydrated Onions).' }
+                    ]}
+                    newItemTemplate={{ id: Date.now().toString(), title: 'New Office', value: 'New Address Location' }}
+                    renderItem={(item) => (
+                      <div className="flex items-start gap-3 sm:gap-4">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+                          <HiMapPin className="w-5 h-5 text-primary-500" />
+                        </div>
+                        <div>
+                          <EditableText id={`contact_addr_label_${item.id}`} defaultText={item.title} as="p" className="text-[12px] sm:text-[13px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 sm:mb-2 block" />
+                          <EditableText
+                            id={`contact_addr_value_${item.id}`}
+                            defaultText={item.value}
+                            as="p"
+                            className="text-[13px] sm:text-[14px] text-gray-600 dark:text-gray-300 leading-relaxed block"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  />
 
                   <div className="flex items-start gap-3 sm:gap-4 py-5 sm:py-6">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
@@ -272,21 +299,53 @@ const Contact = () => {
 
                       <div className="flex items-center gap-3">
                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mr-2 hidden sm:block">Follow Us</span>
-                        {[
-                          { icon: FaFacebookF, href: '#', label: 'Facebook' },
-                          { icon: FaInstagram, href: '#', label: 'Instagram' },
-                          { icon: FaLinkedinIn, href: '#', label: 'LinkedIn' },
-                          { icon: FaXTwitter, href: '#', label: 'Twitter' },
-                        ].map(({ icon: Icon, href, label }) => (
-                          <a
-                            key={label}
-                            href={href}
-                            aria-label={label}
-                            className="w-8 h-8 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 hover:border-primary-200 dark:hover:border-primary-800 text-gray-500 dark:text-gray-400 rounded-full flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
-                          >
-                            <Icon className="w-3.5 h-3.5" />
-                          </a>
-                        ))}
+                        <EditableList
+                          id="contact_social_list"
+                          listContainerClass="flex items-center gap-3"
+                          defaultItems={[
+                            { id: '1', icon: 'facebook', href: 'https://facebook.com', label: 'Facebook' },
+                            { id: '2', icon: 'instagram', href: 'https://instagram.com', label: 'Instagram' },
+                            { id: '3', icon: 'linkedin', href: 'https://linkedin.com', label: 'LinkedIn' },
+                            { id: '4', icon: 'twitter', href: 'https://twitter.com', label: 'Twitter' },
+                          ]}
+                          newItemTemplate={{ id: Date.now().toString(), icon: 'facebook', href: 'https://...', label: 'New Social' }}
+                          renderItem={(social, idx, updateItem) => {
+                            const Icon = iconMap[social.icon] || FaFacebookF;
+                            return (
+                              <div className="relative group/social flex items-center">
+                                <a
+                                  href={social.href}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  aria-label={social.label}
+                                  className="w-8 h-8 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 hover:border-primary-200 dark:hover:border-primary-800 text-gray-500 dark:text-gray-400 rounded-full flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
+                                >
+                                  <Icon className="w-3.5 h-3.5" />
+                                </a>
+                                {isEditMode && (
+                                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 pb-2 z-50 invisible opacity-0 group-hover/social:visible group-hover/social:opacity-100 transition-all duration-300 [transition-delay:1s] group-hover/social:[transition-delay:0s]">
+                                    <div className="bg-white dark:bg-gray-800 p-2 shadow-xl border border-gray-200 dark:border-gray-700 rounded-lg flex flex-col gap-2 min-w-[150px]">
+                                      <select
+                                        value={social.icon}
+                                        onChange={e => updateItem({ icon: e.target.value })}
+                                        className="text-xs p-1 border rounded"
+                                      >
+                                        {Object.keys(iconMap).map(k => <option key={k} value={k}>{k}</option>)}
+                                      </select>
+                                      <input
+                                        type="text"
+                                        value={social.href}
+                                        onChange={e => updateItem({ href: e.target.value })}
+                                        placeholder="Link URL"
+                                        className="text-xs p-1 border rounded focus:outline-none focus:ring-1 focus:ring-primary-500"
+                                      />
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          }}
+                        />
                       </div>
                     </div>
                   </form>

@@ -95,7 +95,7 @@ export default function Products() {
       </div>
 
       {/* Tabs Navigation Menu */}
-      <div className="sticky top-16 md:top-22 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-slate-200 dark:border-gray-700 shadow-sm">
+      <div className="sticky top-[81px] md:top-22 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-slate-200 dark:border-gray-700 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex space-x-2 md:space-x-8 overflow-x-auto py-2.5 md:py-4 scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {CATEGORIES.map((cat) => (

@@ -208,6 +208,23 @@ const WhyUs = () => {
             <DynamicSections slotId="about-4" />
             <hr className="border-gray-100 dark:border-gray-700 my-10" />
 
+            {/* Our Sourcing Network */}
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-12 md:mb-16">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-8 sm:w-12 h-[1px] bg-accent"></div>
+                <EditableText id="whyus_sourcing_label" defaultText="SOURCING NETWORK" as="p" className="text-accent text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase font-body block" />
+              </div>
+              <EditableText id="whyus_sourcing_title" defaultText="Our Sourcing Network" as="h3" className="font-heading text-2xl md:text-3xl lg:text-4xl text-gray-900 dark:text-white mb-6" />
+              <div className="space-y-4 text-gray-600 dark:text-gray-400 text-[13px] md:text-[15px] leading-relaxed">
+                <EditableText id="whyus_sourcing_p1" defaultText="Guar Gum: Sourcing network" as="p" className="block" />
+                <EditableText id="whyus_sourcing_p2" defaultText="Guar gum:souced directly from jodhpur, barmer & bikaner - Rajasthan's prime gaur belt, ensuring superior quality and consistent supply." as="p" className="block" />
+                <EditableText id="whyus_sourcing_p3" defaultText="Dehydrated Onion: Souced from mahuva, Ahmedabad- India's Largest dehydrated Onion processing Cluster." as="p" className="block" />
+              </div>
+            </motion.div>
+
+            <DynamicSections slotId="about-5" />
+            <hr className="border-gray-100 dark:border-gray-700 my-10" />
+
             {/* Our commitment to you */}
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
               <EditableText id="whyus_commit_title" defaultText="Our commitment to you" as="h3" className="font-heading text-2xl md:text-3xl lg:text-4xl text-gray-900 dark:text-white mb-6" />

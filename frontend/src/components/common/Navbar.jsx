@@ -180,7 +180,7 @@ const Navbar = () => {
               >
                 sourcing excellence delivered globally.
               </span> */}
-              <span className="absolute bottom-[20px] left-[33px] lg:bottom-[23px] lg:left-auto lg:right-[-35px]">
+              <span className="absolute bottom-[20px] left-[42px] lg:bottom-[26px] lg:left-auto lg:right-[-43px]">
                 <EditableText
                   id="header_tagline"
                   defaultText="sourcing excellence delivered globally."
@@ -243,7 +243,7 @@ const Navbar = () => {
                 <Link to="/" className="relative flex items-center pb-3" onClick={() => setMobileOpen(false)}>
                   <img src={logoImg} alt="Cresta Foods Logo" className="h-12 sm:h-14 w-auto object-contain" />
                   <span
-                    className="absolute bottom-0 right-[3px] text-[7.5px] sm:text-[8.5px] font-semibold tracking-wider whitespace-nowrap"
+                    className="absolute bottom-[16px] right-[-57px] text-[7.5px] sm:text-[8.5px] font-semibold tracking-wider whitespace-nowrap"
                     style={{ color: '#c58a2b' }}
                   >
                     sourcing excellence delivered globally.

@@ -85,7 +85,7 @@ const Footer = () => {
                 id="footer_tagline"
                 defaultText="sourcing excellence delivered globally."
                 as="span"
-                className="absolute bottom-[18px] left-[53px] lg:bottom-[17px] lg:left-auto lg:right-[-18px] text-[7px] lg:text-[8.5px] font-semibold tracking-wider whitespace-nowrap"
+                className="absolute bottom-[13px] left-[43px] lg:bottom-[17px] lg:left-auto lg:right-[-18px] text-[7px] lg:text-[8.5px] font-semibold tracking-wider whitespace-nowrap"
                 style={{ color: '#3A6B2F' }}
               />
             </Link>
@@ -235,10 +235,24 @@ const Footer = () => {
                   Contact Us
                 </h4>
                 <div className="space-y-2.5 sm:space-y-4">
-                  <div className="flex items-start gap-2 sm:gap-3">
-                    <HiMapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-600 mt-0.5 flex-shrink-0" />
-                    <EditableText id="footer_address" defaultText="Cresta Foods, Exporting from Mundra Port" className="text-[11px] sm:text-sm md:text-[15px] text-gray-500 dark:text-gray-400 leading-tight sm:leading-relaxed block w-full" />
-                  </div>
+                  <EditableList
+                    id="footer_addresses_list"
+                    listContainerClass="space-y-3"
+                    defaultItems={[
+                      { id: '1', title: 'Corporate Office:', address: '303, 2nd Floor, KB Mall, Sneh Nagar, Indore - 452001 Madhya Pradesh.' },
+                      { id: '2', title: 'Registered Office:', address: 'H-1, Nalanda Parisar, Indore, Madhya Pradesh - 452012' }
+                    ]}
+                    newItemTemplate={{ id: Date.now().toString(), title: 'New Office:', address: 'New Address' }}
+                    renderItem={(item) => (
+                      <div className="flex items-start gap-2 sm:gap-3">
+                        <HiMapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-600 mt-0.5 flex-shrink-0" />
+                        <div className="text-[11px] sm:text-sm md:text-[15px] text-gray-500 dark:text-gray-400 leading-tight sm:leading-relaxed block w-full">
+                          <EditableText id={`footer_addr_title_${item.id}`} defaultText={item.title} as="span" className="font-semibold block" />
+                          <EditableText id={`footer_addr_desc_${item.id}`} defaultText={item.address} as="span" className="block" />
+                        </div>
+                      </div>
+                    )}
+                  />
                   <div className="flex items-center gap-2 sm:gap-3">
                     <HiPhone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-600 flex-shrink-0" />
                     <EditableText id="footer_phone" defaultText="+91 12345 67890" className="text-[11px] sm:text-sm md:text-[15px] text-gray-500 dark:text-gray-400 hover:text-primary-700 transition-colors block w-full" />

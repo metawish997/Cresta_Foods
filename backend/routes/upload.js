@@ -39,7 +39,7 @@ router.post('/image', [verifyToken, upload.single('image')], async (req, res) =>
       url: fileUrl,
       mimetype: 'image/avif',
       size: req.file.size,
-      isActive: false, // Default inactive
+      isActive: true, // Default to true so it immediately shows on page
     });
     await newMedia.save();
 

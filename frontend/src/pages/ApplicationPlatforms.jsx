@@ -180,7 +180,7 @@ const ApplicationPlatforms = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
               {/* Card 1 */}
-              <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 hover:-translate-y-1 transition-all duration-300 group overflow-hidden flex flex-col">
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-md md:shadow-none hover:-translate-y-1 transition-all duration-300 group overflow-hidden flex flex-col">
                 <div className="h-48 w-full overflow-hidden relative">
                   <img src={foodBeverage} alt="Food &amp; Beverage Manufacturing" className="w-full h-full object-contain p-2 sm:p-0 sm:object-cover sm:scale-105 group-hover:scale-105 transition-transform duration-500" />
                 </div>
@@ -201,7 +201,7 @@ const ApplicationPlatforms = () => {
               </div>
 
               {/* Card 2 */}
-              <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 hover:-translate-y-1 transition-all duration-300 group overflow-hidden flex flex-col">
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-md md:shadow-none hover:-translate-y-1 transition-all duration-300 group overflow-hidden flex flex-col">
                 <div className="h-48 w-full overflow-hidden relative">
                   <img src={oilGasIndustrial} alt="Oil &amp; Gas / Industrial" className="w-full h-full object-contain p-2 sm:p-0 sm:object-cover sm:scale-105 group-hover:scale-105 transition-transform duration-500" />
                 </div>
@@ -222,7 +222,7 @@ const ApplicationPlatforms = () => {
               </div>
 
               {/* Card 3 */}
-              <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 hover:-translate-y-1 transition-all duration-300 group overflow-hidden flex flex-col">
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-md md:shadow-none hover:-translate-y-1 transition-all duration-300 group overflow-hidden flex flex-col">
                 <div className="h-48 w-full overflow-hidden relative">
                   <img src={pharmaceuticals} alt="Pharmaceuticals &amp; Nutraceuticals" className="w-full h-full object-contain p-2 sm:p-0 sm:object-cover sm:scale-105 group-hover:scale-105 transition-transform duration-500" />
                 </div>
@@ -264,7 +264,7 @@ const ApplicationPlatforms = () => {
               </div>
 
               {/* Card 5 - Full Width */}
-              <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 hover:-translate-y-1 transition-all duration-300 group overflow-hidden flex flex-col md:col-span-2">
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-md md:shadow-none hover:-translate-y-1 transition-all duration-300 group overflow-hidden flex flex-col md:col-span-2">
                 <div className="h-56 md:h-64 w-full overflow-hidden relative">
                   <img src={petFood} alt="Pet Food Manufacturing" className="w-full h-full object-contain p-2 sm:p-0 sm:object-cover sm:scale-105 group-hover:scale-105 transition-transform duration-500" />
                 </div>
@@ -304,7 +304,7 @@ const ApplicationPlatforms = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
               {/* Onion Card 1 */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 hover:-translate-y-1 transition-all duration-300 shadow-sm group overflow-hidden flex flex-col">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 hover:-translate-y-1 transition-all duration-300 shadow-md md:shadow-sm group overflow-hidden flex flex-col">
                 <div className="h-48 w-full overflow-hidden relative">
                   <img src={foodOnion} alt="Processed Food &amp; Ready Meals" className="w-full h-full object-contain p-2 sm:p-0 sm:object-cover sm:scale-105 group-hover:scale-105 transition-transform duration-500" />
                 </div>
@@ -325,7 +325,7 @@ const ApplicationPlatforms = () => {
               </div>
 
               {/* Onion Card 2 */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 hover:-translate-y-1 transition-all duration-300 shadow-sm group overflow-hidden flex flex-col">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 hover:-translate-y-1 transition-all duration-300 shadow-md md:shadow-sm group overflow-hidden flex flex-col">
                 <div className="h-48 w-full overflow-hidden relative">
                   <img src={seasoningSpices} alt="Seasonings, Spice Blends &amp; Snacks" className="w-full h-full object-contain p-2 sm:p-0 sm:object-cover sm:scale-105 group-hover:scale-105 transition-transform duration-500" />
                 </div>
@@ -346,7 +346,7 @@ const ApplicationPlatforms = () => {
               </div>
 
               {/* Onion Card 3 */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 hover:-translate-y-1 transition-all duration-300 shadow-sm group overflow-hidden flex flex-col">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 hover:-translate-y-1 transition-all duration-300 shadow-md md:shadow-sm group overflow-hidden flex flex-col">
                 <div className="h-48 w-full overflow-hidden relative">
                   <img src={foodCatering} alt="Foodservice &amp; Catering" className="w-full h-full object-contain p-2 sm:p-0 sm:object-cover sm:scale-105 group-hover:scale-105 transition-transform duration-500" />
                 </div>
@@ -367,7 +367,7 @@ const ApplicationPlatforms = () => {
               </div>
 
               {/* Onion Card 4 */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 hover:-translate-y-1 transition-all duration-300 shadow-sm group overflow-hidden flex flex-col">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 hover:-translate-y-1 transition-all duration-300 shadow-md md:shadow-sm group overflow-hidden flex flex-col">
                 <div className="h-48 w-full overflow-hidden relative">
                   <img src={babyFood} alt="Baby Food &amp; Health Food" className="w-full h-full object-contain p-2 sm:p-0 sm:object-cover sm:scale-105 group-hover:scale-105 transition-transform duration-500" />
                 </div>

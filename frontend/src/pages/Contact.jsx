@@ -148,7 +148,7 @@ const Contact = () => {
                     id="contact_addresses_list"
                     listContainerClass="space-y-5 sm:space-y-6 pb-5 sm:pb-6"
                     defaultItems={[
-                      { id: '1', title: 'Address', value: 'Cresta Foods, India Exporting from Mundra Port, Gujarat. Sourcing from Rajasthan (Guar Gum) and Mahuva, Gujarat (Dehydrated Onions).' }
+                      { id: '1', title: 'Address', value: 'Cresta Foods, Indore, Madhya Pradesh, India. Exporting via Mundra Port, Gujarat. Sourcing from Rajasthan (Guar Gum) and Mahuva, Gujarat (Dehydrated Onions).' }
                     ]}
                     newItemTemplate={{ id: Date.now().toString(), title: 'New Office', value: 'New Address Location' }}
                     renderItem={(item) => (
@@ -199,7 +199,7 @@ const Contact = () => {
                   />
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded text-[12px] sm:text-[13px] uppercase tracking-widest font-bold shadow-sm">
-                      <EditableText id="contact_map_label" defaultText="📍 Mundra Port, Gujarat" as="span" />
+                      <EditableText id="contact_map_label" defaultText="📍 Indore, Madhya Pradesh, India" as="span" />
                     </div>
                   </div>
                 </div>

@@ -9,8 +9,9 @@ const FloatingActions = () => {
   return (
     <div className="fixed bottom-6 right-4 md:right-8 z-40 flex flex-col gap-4 items-end">
       {/* Brochure Download */}
-      <button
-        onClick={() => navigate('/application-platforms?download=true')}
+      <a
+        href="/api/brochure/download"
+        download
         className="group flex items-center bg-[#D68A1E] text-white rounded-full shadow-2xl shadow-[#D68A1E]/40 hover:bg-[#C27C1A] transition-all duration-300 overflow-hidden w-12 h-12 hover:w-[155px] cursor-pointer outline-none border-none"
         title="Download Application Platforms PDF"
         aria-label="Download Brochure"
@@ -21,7 +22,7 @@ const FloatingActions = () => {
         <span className="text-sm font-bold tracking-wide whitespace-nowrap pr-4">
           Download
         </span>
-      </button>
+      </a>
 
       {/* WhatsApp */}
       <a

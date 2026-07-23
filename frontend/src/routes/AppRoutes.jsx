@@ -34,6 +34,7 @@ const LiveChat = lazy(() => import('../pages/admin/LiveChat'));
 const PagesManager = lazy(() => import('../pages/admin/PagesManager'));
 const CertificationsManager = lazy(() => import('../pages/admin/CertificationsManager'));
 const MediaManager = lazy(() => import('../pages/admin/MediaManager'));
+const BrochureUpload = lazy(() => import('../pages/admin/BrochureUpload'));
 
 // Admin loading fallback
 const AdminLoader = () => (
@@ -104,6 +105,7 @@ const AppRoutes = () => {
         <Route path="live-chat" element={<ProtectedRoute permission="manage_live_chat"><Suspense fallback={<AdminLoader />}><LiveChat /></Suspense></ProtectedRoute>} />
         <Route path="certifications" element={<ProtectedRoute permission="manage_clients"><Suspense fallback={<AdminLoader />}><CertificationsManager /></Suspense></ProtectedRoute>} />
         <Route path="media" element={<Suspense fallback={<AdminLoader />}><MediaManager /></Suspense>} />
+        <Route path="brochure" element={<Suspense fallback={<AdminLoader />}><BrochureUpload /></Suspense>} />
         <Route path="pages" element={<Suspense fallback={<AdminLoader />}><PagesManager /></Suspense>} />
       </Route>
     </Routes>

@@ -18,9 +18,10 @@ const navSections = [
       { icon: '🌿', label: 'Products', to: '/admin/products', permission: 'manage_products' },
       { icon: '✍️', label: 'Blogs', to: '/admin/blogs', permission: 'manage_blogs' },
       { icon: '❓', label: 'FAQs', to: '/admin/faqs', permission: 'manage_faqs' },
-      { icon: '🏢', label: 'Clients', to: '/admin/clients', permission: 'manage_clients' },
-      { icon: '📜', label: 'Certifications', to: '/admin/certifications', permission: 'manage_clients' },
+      // { icon: '🏢', label: 'Clients', to: '/admin/clients', permission: 'manage_clients' },
+      // { icon: '📜', label: 'Certifications', to: '/admin/certifications', permission: 'manage_clients' },
       { icon: '📁', label: 'Media Access', to: '/admin/media', permission: null },
+      { icon: '📄', label: 'Brochure PDF', to: '/admin/brochure', permission: null },
       // { icon: '📈', label: 'Statistics', to: '/admin/statistics', permission: 'manage_statistics' },
     ],
   },
@@ -42,7 +43,7 @@ const navSections = [
     label: 'Admin',
     items: [
       { icon: '👥', label: 'Users', to: '/admin/users', permission: 'manage_users' },
-      { icon: '🔑', label: 'Roles', to: '/admin/roles', permission: 'manage_roles' },
+      // { icon: '🔑', label: 'Roles', to: '/admin/roles', permission: 'manage_roles' },
     ],
   },
 ];

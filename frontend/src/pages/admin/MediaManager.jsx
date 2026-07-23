@@ -110,7 +110,7 @@ const MediaManager = () => {
                     <td>
                       <div className="h-12 w-12 rounded overflow-hidden bg-gray-100 flex items-center justify-center">
                         {media.isActive ? (
-                          <img src={`http://localhost:5001${media.url}`} alt={media.filename} className="h-full w-full object-cover" />
+                          <img src={media.url} alt={media.filename} className="h-full w-full object-cover" />
                         ) : (
                           <span className="text-xs text-gray-400">Hidden</span>
                         )}

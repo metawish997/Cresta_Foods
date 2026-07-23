@@ -30,6 +30,7 @@ import uploadRoutes from './routes/upload.js';
 import chatRoutes from './routes/chat.js';
 import dashboardRoutes from './routes/dashboard.js';
 import mediaRoutes from './routes/media.js';
+import brochureRoutes from './routes/brochure.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -96,6 +97,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/media', mediaRoutes);
+app.use('/api/brochure', brochureRoutes);
 
 // ─── Health Check ─────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {

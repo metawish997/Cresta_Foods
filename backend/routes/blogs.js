@@ -6,6 +6,7 @@ import Blog from '../models/Blog.js';
 import { verifyToken, checkPermission } from '../middleware/auth.js';
 import { processToAvif, deleteUploadedFile } from '../utils/imageOptimizer.js';
 import { uploadsDir } from '../config/env.js';
+import Media from '../models/Media.js';
 
 const router = express.Router();
 
@@ -72,7 +73,17 @@ router.post(
       if (existing) return res.status(409).json({ message: 'Blog with this slug already exists' });
 
       let imagePath = req.body.image || '';
-      if (req.file) imagePath = await processToAvif(req.file, uploadsDir);
+      if (req.file) {
+        imagePath = await processToAvif(req.file, uploadsDir);
+        await Media.create({
+          filename: imagePath,
+          originalName: req.file.originalname,
+          url: `/uploads/${imagePath}`,
+          mimetype: 'image/avif',
+          size: req.file.size,
+          isActive: true,
+        });
+      }
 
       const tags = req.body.tags ? (typeof req.body.tags === 'string' ? JSON.parse(req.body.tags) : req.body.tags) : [];
 
@@ -104,8 +115,17 @@ router.put(
       if (req.file) {
         if (blog.image && !blog.image.startsWith('http')) {
           deleteUploadedFile(blog.image, uploadsDir);
+          await Media.deleteOne({ filename: blog.image });
         }
         updates.image = await processToAvif(req.file, uploadsDir);
+        await Media.create({
+          filename: updates.image,
+          originalName: req.file.originalname,
+          url: `/uploads/${updates.image}`,
+          mimetype: 'image/avif',
+          size: req.file.size,
+          isActive: true,
+        });
       }
 
       if (req.body.tags) {
@@ -129,6 +149,7 @@ router.delete('/:id', [verifyToken, checkPermission('manage_blogs')], async (req
 
     if (blog.image && !blog.image.startsWith('http')) {
       deleteUploadedFile(blog.image, uploadsDir);
+      await Media.deleteOne({ filename: blog.image });
     }
     await Blog.findByIdAndDelete(req.params.id);
     res.json({ message: 'Blog deleted successfully' });

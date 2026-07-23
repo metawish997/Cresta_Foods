@@ -7,6 +7,7 @@ import HeroSlide from '../models/HeroSlide.js';
 import { verifyToken, checkPermission } from '../middleware/auth.js';
 import { processToAvif, deleteUploadedFile } from '../utils/imageOptimizer.js';
 import { uploadsDir } from '../config/env.js';
+import Media from '../models/Media.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -48,6 +49,14 @@ router.post(
       if (!req.file) return res.status(400).json({ message: 'Image file is required' });
 
       const newFilename = await processToAvif(req.file, uploadsDir);
+      await Media.create({
+        filename: newFilename,
+        originalName: req.file.originalname,
+        url: `/uploads/${newFilename}`,
+        mimetype: 'image/avif',
+        size: req.file.size,
+        isActive: true,
+      });
       const count = await HeroSlide.countDocuments();
 
       const slide = await HeroSlide.create({
@@ -81,7 +90,16 @@ router.put(
       if (req.file) {
         // Delete old file
         deleteUploadedFile(slide.image_path, uploadsDir);
+        await Media.deleteOne({ filename: slide.image_path });
         const newFilename = await processToAvif(req.file, uploadsDir);
+        await Media.create({
+          filename: newFilename,
+          originalName: req.file.originalname,
+          url: `/uploads/${newFilename}`,
+          mimetype: 'image/avif',
+          size: req.file.size,
+          isActive: true,
+        });
         updates.image_path = newFilename;
       }
 
@@ -122,6 +140,7 @@ router.delete(
       if (!slide) return res.status(404).json({ message: 'Slide not found' });
 
       deleteUploadedFile(slide.image_path, uploadsDir);
+      await Media.deleteOne({ filename: slide.image_path });
       await HeroSlide.findByIdAndDelete(req.params.id);
       res.json({ message: 'Slide deleted successfully' });
     } catch (err) {

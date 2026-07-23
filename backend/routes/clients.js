@@ -6,6 +6,7 @@ import Client from '../models/Client.js';
 import { verifyToken, checkPermission } from '../middleware/auth.js';
 import { processToAvif, deleteUploadedFile } from '../utils/imageOptimizer.js';
 import { uploadsDir } from '../config/env.js';
+import Media from '../models/Media.js';
 
 const router = express.Router();
 
@@ -38,7 +39,17 @@ router.post(
       if (!req.body.name) return res.status(400).json({ message: 'Client name is required' });
 
       let logoPath = '';
-      if (req.file) logoPath = await processToAvif(req.file, uploadsDir);
+      if (req.file) {
+        logoPath = await processToAvif(req.file, uploadsDir);
+        await Media.create({
+          filename: logoPath,
+          originalName: req.file.originalname,
+          url: `/uploads/${logoPath}`,
+          mimetype: 'image/avif',
+          size: req.file.size,
+          isActive: true,
+        });
+      }
 
       const count = await Client.countDocuments();
       const client = await Client.create({
@@ -66,8 +77,19 @@ router.put(
 
       const updates = { ...req.body };
       if (req.file) {
-        if (client.logo_path) deleteUploadedFile(client.logo_path, uploadsDir);
+        if (client.logo_path && !client.logo_path.startsWith('http')) {
+          deleteUploadedFile(client.logo_path, uploadsDir);
+          await Media.deleteOne({ filename: client.logo_path });
+        }
         updates.logo_path = await processToAvif(req.file, uploadsDir);
+        await Media.create({
+          filename: updates.logo_path,
+          originalName: req.file.originalname,
+          url: `/uploads/${updates.logo_path}`,
+          mimetype: 'image/avif',
+          size: req.file.size,
+          isActive: true,
+        });
       }
 
       await Client.findByIdAndUpdate(req.params.id, updates);

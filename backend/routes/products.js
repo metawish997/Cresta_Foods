@@ -6,6 +6,7 @@ import Product from '../models/Product.js';
 import { verifyToken, checkPermission } from '../middleware/auth.js';
 import { processToAvif, deleteUploadedFile } from '../utils/imageOptimizer.js';
 import { uploadsDir } from '../config/env.js';
+import Media from '../models/Media.js';
 
 const router = express.Router();
 
@@ -88,6 +89,14 @@ router.post(
       let imagePath = req.body.image || '';
       if (req.file) {
         imagePath = await processToAvif(req.file, uploadsDir);
+        await Media.create({
+          filename: imagePath,
+          originalName: req.file.originalname,
+          url: `/uploads/${imagePath}`,
+          mimetype: 'image/avif',
+          size: req.file.size,
+          isActive: true,
+        });
       }
 
       const count = await Product.countDocuments();
@@ -128,15 +137,24 @@ router.put(
       if (req.file) {
         if (product.image && !product.image.startsWith('http')) {
           deleteUploadedFile(product.image, uploadsDir);
+          await Media.deleteOne({ filename: product.image });
         }
         updates.image = await processToAvif(req.file, uploadsDir);
+        await Media.create({
+          filename: updates.image,
+          originalName: req.file.originalname,
+          url: `/uploads/${updates.image}`,
+          mimetype: 'image/avif',
+          size: req.file.size,
+          isActive: true,
+        });
       }
 
       // Parse JSON array fields
       ['specifications', 'subProducts', 'keyProperties', 'whyChoose', 'whyPartner', 'applications', 'certifications', 'gallery'].forEach((key) => {
         if (req.body[key] !== undefined) updates[key] = parseArrayField(req.body[key]);
       });
-      
+
       if (req.body.specificationTable !== undefined) {
         updates.specificationTable = parseJSONField(req.body.specificationTable, { headers: [], rows: [] });
       }
@@ -147,7 +165,7 @@ router.put(
       res.json({ message: 'Product updated successfully' });
     } catch (err) {
       const fs = await import('fs');
-      try { fs.appendFileSync('D:/demo_uis/CrestaFoods/backend/error.log', new Date().toISOString() + '\\n' + err.stack + '\\nBODY: ' + JSON.stringify(req.body) + '\\n\\n'); } catch(e){}
+      try { fs.appendFileSync('D:/demo_uis/CrestaFoods/backend/error.log', new Date().toISOString() + '\\n' + err.stack + '\\nBODY: ' + JSON.stringify(req.body) + '\\n\\n'); } catch (e) { }
       res.status(500).json({ message: 'Error updating product', error: err.message });
     }
   }
@@ -174,6 +192,7 @@ router.delete('/:id', [verifyToken, checkPermission('manage_products')], async (
 
     if (product.image && !product.image.startsWith('http')) {
       deleteUploadedFile(product.image, uploadsDir);
+      await Media.deleteOne({ filename: product.image });
     }
     await Product.findByIdAndDelete(req.params.id);
     res.json({ message: 'Product deleted successfully' });

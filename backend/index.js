@@ -29,6 +29,7 @@ import certificationsRoutes from './routes/certifications.js';
 import uploadRoutes from './routes/upload.js';
 import chatRoutes from './routes/chat.js';
 import dashboardRoutes from './routes/dashboard.js';
+import mediaRoutes from './routes/media.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -57,8 +58,25 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Serve uploaded files
-app.use('/uploads', express.static(uploadsDir));
+// Serve uploaded files conditionally based on active status
+import Media from './models/Media.js';
+
+app.get('/uploads/:filename', async (req, res, next) => {
+  try {
+    const media = await Media.findOne({ filename: req.params.filename });
+    if (!media || !media.isActive) {
+      return res.status(404).send('Not Found');
+    }
+    const filePath = path.join(uploadsDir, req.params.filename);
+    if (fs.existsSync(filePath)) {
+      res.sendFile(filePath);
+    } else {
+      res.status(404).send('Not Found');
+    }
+  } catch (err) {
+    next(err);
+  }
+});
 
 // ─── API Routes ───────────────────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
@@ -77,6 +95,7 @@ app.use('/api/certifications', certificationsRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/media', mediaRoutes);
 
 // ─── Health Check ─────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {

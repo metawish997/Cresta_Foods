@@ -6,6 +6,7 @@ import { useTheme } from '../../context/ThemeContext';
 import clsx from 'clsx';
 import logoImg from '../../assets/images/logo/full-logo.png';
 import EditableText from '../EditableText';
+import api from '../../utils/api';
 
 const navLinks = [
   {
@@ -142,7 +143,22 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState(null);
   const [mobileExpandedSub, setMobileExpandedSub] = useState(null);
+  const [isMediaActive, setIsMediaActive] = useState(false);
   const { isDarkMode, toggleDarkMode } = useTheme();
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const { data } = await api.get('/page-content/global');
+        if (data.isMediaPageActive === 'true') {
+          setIsMediaActive(true);
+        }
+      } catch (err) {
+        console.error('Failed to fetch navbar settings:', err);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -197,6 +213,9 @@ const Navbar = () => {
                 {navLinks.map((link) => (
                   <NavItem key={link.label} link={link} scrolled={scrolled} />
                 ))}
+                {isMediaActive && (
+                  <NavItem key="Media" link={{ label: 'Media', to: '/media' }} scrolled={scrolled} />
+                )}
                 {navLinksRight.map((link) => (
                   <NavItem key={link.label} link={link} scrolled={scrolled} />
                 ))}
@@ -262,6 +281,7 @@ const Navbar = () => {
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1 items-start">
                   {[
                     ...navLinks.filter(l => l.label !== 'Products'),
+                    isMediaActive ? { label: 'Media', to: '/media' } : null,
                     ...navLinksRight.filter(l => l.label !== 'Get In Touch'),
                     navLinks.find(l => l.label === 'Products'),
                     navLinksRight.find(l => l.label === 'Get In Touch')

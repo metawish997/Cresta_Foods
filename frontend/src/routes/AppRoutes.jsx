@@ -33,6 +33,7 @@ const RolesManagement = lazy(() => import('../pages/admin/RolesManagement'));
 const LiveChat = lazy(() => import('../pages/admin/LiveChat'));
 const PagesManager = lazy(() => import('../pages/admin/PagesManager'));
 const CertificationsManager = lazy(() => import('../pages/admin/CertificationsManager'));
+const MediaManager = lazy(() => import('../pages/admin/MediaManager'));
 
 // Admin loading fallback
 const AdminLoader = () => (
@@ -102,6 +103,7 @@ const AppRoutes = () => {
         <Route path="roles" element={<ProtectedRoute permission="manage_roles"><Suspense fallback={<AdminLoader />}><RolesManagement /></Suspense></ProtectedRoute>} />
         <Route path="live-chat" element={<ProtectedRoute permission="manage_live_chat"><Suspense fallback={<AdminLoader />}><LiveChat /></Suspense></ProtectedRoute>} />
         <Route path="certifications" element={<ProtectedRoute permission="manage_clients"><Suspense fallback={<AdminLoader />}><CertificationsManager /></Suspense></ProtectedRoute>} />
+        <Route path="media" element={<Suspense fallback={<AdminLoader />}><MediaManager /></Suspense>} />
         <Route path="pages" element={<Suspense fallback={<AdminLoader />}><PagesManager /></Suspense>} />
       </Route>
     </Routes>

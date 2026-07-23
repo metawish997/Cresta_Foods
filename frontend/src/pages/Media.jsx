@@ -1,21 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiXMark, HiPlay } from 'react-icons/hi2';
 import SeoHead from '../components/SeoHead';
+import api from '../utils/api';
 
-const galleryImages = [
-  { id: 1, src: 'https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=800&q=80', alt: 'Manufacturing Plant', category: 'Lab & Facilities' },
-  { id: 2, src: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=800&q=80', alt: 'Potato Flakes', category: 'Products' },
-  { id: 3, src: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=800&q=80', alt: 'French Fries', category: 'Products' },
-  { id: 4, src: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&q=80', alt: 'Frozen Vegetables', category: 'Products' },
-  { id: 5, src: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=800&q=80', alt: 'Quality Lab', category: 'Lab & Facilities' },
-  { id: 6, src: 'https://images.unsplash.com/photo-1565514020179-026b92b84bb6?w=800&q=80', alt: 'Packaging Line', category: 'Lab & Facilities' },
-  { id: 7, src: 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=800&q=80', alt: 'Storage Facility', category: 'Lab & Facilities' },
-  { id: 8, src: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4e6?w=800&q=80', alt: 'Farm Field', category: 'Lab & Facilities' },
-  { id: 9, src: 'https://images.unsplash.com/photo-1605296867304-46d5465a13f1?w=800&q=80', alt: 'Product Close-up', category: 'Products' },
-];
-
+// Gallery images will be fetched dynamically from the backend
 const videos = [
   {
     id: 1,
@@ -40,14 +30,45 @@ const videos = [
 const tabs = ['All', 'Products', 'Lab & Facilities', 'Videos'];
 
 const Media = () => {
+  const [galleryImages, setGalleryImages] = useState([]);
   const [tab, setTab] = useState('All');
   const [lightbox, setLightbox] = useState(null);
   const [videoModal, setVideoModal] = useState(null);
+  const [isAllowed, setIsAllowed] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAccess = async () => {
+      try {
+        const { data } = await api.get('/page-content/global');
+        if (data.isMediaPageActive !== 'true') {
+          navigate('/', { replace: true });
+        } else {
+          setIsAllowed(true);
+          // Fetch dynamic media
+          const mediaRes = await api.get('/media/public');
+          setGalleryImages(mediaRes.data.map(m => ({
+            id: m._id,
+            src: m.url,
+            alt: (m.originalName || m.filename).replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' '),
+            category: 'Products' // all dynamically fetched default to 'Products' for now
+          })));
+        }
+      } catch (err) {
+        navigate('/', { replace: true });
+      }
+    };
+    checkAccess();
+  }, [navigate]);
 
   // Filter images based on tab
   const filteredImages = tab === 'All' 
     ? galleryImages 
     : galleryImages.filter(img => img.category === tab);
+
+  if (!isAllowed) {
+    return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900"><div className="w-8 h-8 border-4 border-primary-700 border-t-transparent rounded-full animate-spin"></div></div>;
+  }
 
   return (
     <div className="w-full min-h-screen flex flex-col">
@@ -118,10 +139,8 @@ const Media = () => {
                       alt={img.alt}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gray-900/0 group-hover:bg-gray-900/40 transition-all duration-300 flex items-center justify-center">
-                      <div className="text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all duration-300 bg-black/60 px-4 py-2 rounded-lg backdrop-blur-sm translate-y-4 group-hover:translate-y-0">
-                        {img.alt}
-                      </div>
+                    <div className="absolute inset-0 bg-gray-900/0 group-hover:bg-gray-900/20 transition-all duration-300 flex items-center justify-center">
+                      {/* Name removed per user request */}
                     </div>
                   </motion.div>
                 ))}

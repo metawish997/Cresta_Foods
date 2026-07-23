@@ -5,6 +5,7 @@ import path from 'path';
 import { verifyToken } from '../middleware/auth.js';
 import { processToAvif } from '../utils/imageOptimizer.js';
 import { uploadsDir } from '../config/env.js';
+import Media from '../models/Media.js';
 
 const router = express.Router();
 
@@ -30,9 +31,22 @@ router.post('/image', [verifyToken, upload.single('image')], async (req, res) =>
     if (!req.file) return res.status(400).json({ message: 'No image file provided' });
 
     const newFilename = await processToAvif(req.file, uploadsDir);
-    res.json({
-      url: `/uploads/${newFilename}`,
+    const fileUrl = `/uploads/${newFilename}`;
+
+    const newMedia = new Media({
       filename: newFilename,
+      originalName: req.file.originalname,
+      url: fileUrl,
+      mimetype: 'image/avif',
+      size: req.file.size,
+      isActive: false, // Default inactive
+    });
+    await newMedia.save();
+
+    res.json({
+      url: fileUrl,
+      filename: newFilename,
+      media: newMedia
     });
   } catch (err) {
     res.status(500).json({ message: 'Error uploading image', error: err.message });

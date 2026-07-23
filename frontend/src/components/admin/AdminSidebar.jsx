@@ -20,6 +20,7 @@ const navSections = [
       { icon: '❓', label: 'FAQs', to: '/admin/faqs', permission: 'manage_faqs' },
       { icon: '🏢', label: 'Clients', to: '/admin/clients', permission: 'manage_clients' },
       { icon: '📜', label: 'Certifications', to: '/admin/certifications', permission: 'manage_clients' },
+      { icon: '📁', label: 'Media Access', to: '/admin/media', permission: null },
       // { icon: '📈', label: 'Statistics', to: '/admin/statistics', permission: 'manage_statistics' },
     ],
   },

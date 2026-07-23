@@ -105,11 +105,11 @@ const WhyUs = () => {
             {/* About Us */}
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-12 md:mb-16">
               <EditableText id="whyus_subtitle" defaultText="Sourcing Excellence Delivered Globally." as="p" className="text-gray-700 dark:text-gray-300 text-lg md:text-xl font-medium mb-6" />
-              <EditableText 
-                id="whyus_intro" 
-                defaultText="From the guar fields of Rajasthan to onion-processing belts of Gujarat and Madhya Pradesh, Cresta Foods brings India's finest food ingredients and agricultural products to buyers across the world with the precision, documentation, and consistency that global trade demands." 
+              <EditableText
+                id="whyus_intro"
+                defaultText="From the guar fields of Rajasthan to onion-processing belts of Gujarat and Madhya Pradesh, Cresta Foods brings India's finest food ingredients and agricultural products to buyers across the world with the precision, documentation, and consistency that global trade demands."
                 as="p"
-                className="text-gray-600 dark:text-gray-400 text-[13px] md:text-[15px] leading-relaxed" 
+                className="text-gray-600 dark:text-gray-400 text-[13px] md:text-[15px] leading-relaxed"
               />
             </motion.div>
 
@@ -251,7 +251,7 @@ const WhyUs = () => {
           </div>
         </div>
       </section>
-      
+
       <DynamicSections slotId="about" />
 
 

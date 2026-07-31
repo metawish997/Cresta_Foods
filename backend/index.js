@@ -123,7 +123,7 @@ app.get('/api/health', (req, res) => {
 app.use(express.static(path.join(__dirname, 'public', 'dist')));
 
 // 2. Fallback route index.html (public/dist/index.html) ko serve karega
-app.get('*', (req, res) => {
+app.get('{/*splat}', (req, res) => {
   const indexPath = path.join(__dirname, 'public', 'dist', 'index.html');
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);

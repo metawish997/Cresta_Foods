@@ -23,13 +23,17 @@ router.post('/', async (req, res) => {
   try {
     const inquiry = await Inquiry.create({ name, email, company, phone, message });
 
-    // Send emails (non-blocking — don't fail request if email fails)
-    sendInquiryNotification(inquiry).catch(() => {});
+    // Send emails (blocking — fail request if email fails)
+    await sendInquiryNotification(inquiry);
+    
+    // We don't want to fail the whole inquiry if the confirmation to the user fails,
+    // but the admin notification must succeed.
     sendConfirmationEmail(inquiry).catch(() => {});
 
     res.status(201).json({ message: 'Inquiry submitted successfully' });
   } catch (err) {
-    res.status(500).json({ message: 'Error submitting inquiry', error: err.message });
+    console.error('Error in inquiry submission:', err);
+    res.status(500).json({ message: 'Failed to send inquiry email. Please check the configuration or try again later.', error: err.message });
   }
 });
 

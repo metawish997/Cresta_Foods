@@ -31,6 +31,7 @@ import chatRoutes from './routes/chat.js';
 import dashboardRoutes from './routes/dashboard.js';
 import mediaRoutes from './routes/media.js';
 import brochureRoutes from './routes/brochure.js';
+import emailSettingsRoutes from './routes/emailSettings.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -98,6 +99,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/brochure', brochureRoutes);
+app.use('/api/email-settings', emailSettingsRoutes);
 
 // ─── Health Check ─────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {

@@ -1,7 +1,100 @@
-// frontend/src/pages/admin/HeroSlidesManager.jsx
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, rectSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import api from '../../utils/api';
+
+const SlideCard = ({ slide, idx, getImageUrl, toggleStatus, deleteSlide, updateAltText, dragAttributes, dragListeners, style, isDragging, isOverlay }) => {
+  return (
+    <div
+      style={{ ...style, padding: 0, overflow: 'hidden', opacity: isDragging && !isOverlay ? 0.3 : 1 }}
+      className={`admin-card ${isOverlay ? 'shadow-2xl scale-105' : ''}`}
+    >
+      <div style={{ position: 'relative', paddingTop: '56.25%', background: '#F3F4F6' }}>
+        <div 
+          {...dragAttributes} 
+          {...dragListeners} 
+          style={{ position: 'absolute', inset: 0, zIndex: 5, cursor: isOverlay ? 'grabbing' : 'grab' }}
+        />
+        {slide.image_path ? (
+          <img
+            src={getImageUrl(slide)}
+            alt={slide.alt_text || 'Slide'}
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        ) : (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40 }}>🖼️</div>
+        )}
+        <div style={{ position: 'absolute', top: 8, left: 8, zIndex: 10 }}>
+          <span className={`admin-badge ${slide.status === 'ACTIVE' ? 'admin-badge-green' : 'admin-badge-gray'}`}>
+            {slide.status}
+          </span>
+        </div>
+        <div style={{ position: 'absolute', top: 8, right: 8, background: 'rgba(0,0,0,0.6)', color: 'white', fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 12, zIndex: 10 }}>
+          #{idx + 1}
+        </div>
+      </div>
+
+      <div style={{ padding: '12px 14px', position: 'relative', zIndex: 10 }}>
+        <input
+          type="text"
+          className="admin-input"
+          style={{ marginBottom: 10, fontSize: 12 }}
+          defaultValue={slide.alt_text || ''}
+          placeholder="Alt text / description"
+          onBlur={(e) => updateAltText(slide, e.target.value)}
+        />
+        <div style={{ display: 'flex', gap: 8, justifyContent: 'space-between' }}>
+          <button
+            className={`admin-btn admin-btn-sm ${slide.status === 'ACTIVE' ? 'admin-btn-secondary' : 'admin-btn-primary'}`}
+            onClick={() => toggleStatus(slide)}
+          >
+            {slide.status === 'ACTIVE' ? '⏸ Deactivate' : '▶ Activate'}
+          </button>
+          <button
+            className="admin-btn admin-btn-danger admin-btn-sm"
+            onClick={() => deleteSlide(slide._id)}
+          >
+            🗑 Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const SortableSlide = ({ slide, idx, getImageUrl, toggleStatus, deleteSlide, updateAltText }) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: slide._id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 50 : 1,
+    position: 'relative',
+  };
+
+  return (
+    <motion.div
+      ref={setNodeRef}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: idx * 0.05 }}
+    >
+      <SlideCard 
+        slide={slide} 
+        idx={idx} 
+        getImageUrl={getImageUrl} 
+        toggleStatus={toggleStatus} 
+        deleteSlide={deleteSlide} 
+        updateAltText={updateAltText} 
+        dragAttributes={attributes} 
+        dragListeners={listeners} 
+        style={style} 
+        isDragging={isDragging} 
+      />
+    </motion.div>
+  );
+};
 
 const HeroSlidesManager = () => {
   const [slides, setSlides] = useState([]);
@@ -9,6 +102,7 @@ const HeroSlidesManager = () => {
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+  const [activeId, setActiveId] = useState(null);
   const fileInputRef = useRef(null);
 
   const fetchSlides = async () => {
@@ -50,6 +144,38 @@ const HeroSlidesManager = () => {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragStart = (event) => {
+    setActiveId(event.active.id);
+  };
+
+  const handleDragEnd = async (event) => {
+    setActiveId(null);
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setSlides((items) => {
+        const oldIndex = items.findIndex((i) => i._id === active.id);
+        const newIndex = items.findIndex((i) => i._id === over.id);
+        const newOrder = arrayMove(items, oldIndex, newIndex);
+        
+        const orderedIds = newOrder.map((s) => s._id);
+        api.put('/hero-slides/utils/reorder', { orderedIds }).catch(() => {
+          showMsg('error', 'Failed to save new order');
+        });
+        
+        return newOrder;
+      });
+    }
+  };
+
+  const handleDragCancel = () => {
+    setActiveId(null);
   };
 
   const toggleStatus = async (slide) => {
@@ -138,67 +264,42 @@ const HeroSlidesManager = () => {
           <p style={{ fontSize: 13, marginTop: 4 }}>Upload your first hero image to get started</p>
         </div>
       ) : (
-        <div className="admin-grid-3" style={{ gap: 20 }}>
-          {slides.map((slide, idx) => (
-            <motion.div
-              key={slide._id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: idx * 0.05 }}
-              className="admin-card"
-              style={{ padding: 0, overflow: 'hidden' }}
-            >
-              {/* Image */}
-              <div style={{ position: 'relative', paddingTop: '56.25%', background: '#F3F4F6' }}>
-                {slide.image_path ? (
-                  <img
-                    src={getImageUrl(slide)}
-                    alt={slide.alt_text || 'Slide'}
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                ) : (
-                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40 }}>🖼️</div>
-                )}
-                {/* Status badge */}
-                <div style={{ position: 'absolute', top: 8, left: 8 }}>
-                  <span className={`admin-badge ${slide.status === 'ACTIVE' ? 'admin-badge-green' : 'admin-badge-gray'}`}>
-                    {slide.status}
-                  </span>
-                </div>
-                {/* Order badge */}
-                <div style={{ position: 'absolute', top: 8, right: 8, background: 'rgba(0,0,0,0.6)', color: 'white', fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 12 }}>
-                  #{idx + 1}
-                </div>
-              </div>
-
-              {/* Controls */}
-              <div style={{ padding: '12px 14px' }}>
-                <input
-                  type="text"
-                  className="admin-input"
-                  style={{ marginBottom: 10, fontSize: 12 }}
-                  defaultValue={slide.alt_text || ''}
-                  placeholder="Alt text / description"
-                  onBlur={(e) => updateAltText(slide, e.target.value)}
+        <DndContext 
+          sensors={sensors} 
+          collisionDetection={closestCenter} 
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          onDragCancel={handleDragCancel}
+        >
+          <SortableContext items={slides.map(s => s._id)} strategy={rectSortingStrategy}>
+            <div className="admin-grid-3" style={{ gap: 20 }}>
+              {slides.map((slide, idx) => (
+                <SortableSlide
+                  key={slide._id}
+                  slide={slide}
+                  idx={idx}
+                  getImageUrl={getImageUrl}
+                  toggleStatus={toggleStatus}
+                  deleteSlide={deleteSlide}
+                  updateAltText={updateAltText}
                 />
-                <div style={{ display: 'flex', gap: 8, justifyContent: 'space-between' }}>
-                  <button
-                    className={`admin-btn admin-btn-sm ${slide.status === 'ACTIVE' ? 'admin-btn-secondary' : 'admin-btn-primary'}`}
-                    onClick={() => toggleStatus(slide)}
-                  >
-                    {slide.status === 'ACTIVE' ? '⏸ Deactivate' : '▶ Activate'}
-                  </button>
-                  <button
-                    className="admin-btn admin-btn-danger admin-btn-sm"
-                    onClick={() => deleteSlide(slide._id)}
-                  >
-                    🗑 Delete
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              ))}
+            </div>
+          </SortableContext>
+          <DragOverlay>
+            {activeId ? (
+              <SlideCard
+                slide={slides.find(s => s._id === activeId)}
+                idx={slides.findIndex(s => s._id === activeId)}
+                getImageUrl={getImageUrl}
+                toggleStatus={toggleStatus}
+                deleteSlide={deleteSlide}
+                updateAltText={updateAltText}
+                isOverlay={true}
+              />
+            ) : null}
+          </DragOverlay>
+        </DndContext>
       )}
     </div>
   );

@@ -25,6 +25,7 @@ const getPageTitle = (pathname) => {
     '/admin/live-chat': 'Live Chat',
     '/admin/pages': 'Pages',
     '/admin/certifications': 'Certifications',
+    '/admin/email-settings': 'Email / SMTP Settings',
   };
   if (pathname.includes('/edit/')) return pathname.includes('products') ? 'Edit Product' : 'Edit Blog';
   return map[pathname] || 'Admin';

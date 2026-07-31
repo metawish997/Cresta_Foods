@@ -37,6 +37,7 @@ const navSections = [
     items: [
       { icon: '🔍', label: 'SEO Manager', to: '/admin/seo', permission: 'manage_seo' },
       { icon: '📄', label: 'Pages', to: '/admin/pages', permission: null },
+      { icon: '📧', label: 'Email / SMTP', to: '/admin/email-settings', permission: 'manage_settings' },
     ],
   },
   {

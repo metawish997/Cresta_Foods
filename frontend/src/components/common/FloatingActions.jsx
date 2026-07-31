@@ -26,7 +26,7 @@ const FloatingActions = () => {
 
       {/* WhatsApp */}
       <a
-        href="https://wa.me/911234567890"
+        href="https://wa.me/918889699888"
         target="_blank"
         rel="noopener noreferrer"
         className="group flex items-center bg-[#25D366] text-white rounded-full shadow-2xl shadow-[#25D366]/40 hover:bg-[#20BA5A] transition-all duration-300 overflow-hidden w-12 h-12 hover:w-[110px]"

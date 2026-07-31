@@ -35,6 +35,7 @@ const PagesManager = lazy(() => import('../pages/admin/PagesManager'));
 const CertificationsManager = lazy(() => import('../pages/admin/CertificationsManager'));
 const MediaManager = lazy(() => import('../pages/admin/MediaManager'));
 const BrochureUpload = lazy(() => import('../pages/admin/BrochureUpload'));
+const EmailSettingsManager = lazy(() => import('../pages/admin/EmailSettingsManager'));
 
 // Admin loading fallback
 const AdminLoader = () => (
@@ -107,6 +108,7 @@ const AppRoutes = () => {
         <Route path="media" element={<Suspense fallback={<AdminLoader />}><MediaManager /></Suspense>} />
         <Route path="brochure" element={<Suspense fallback={<AdminLoader />}><BrochureUpload /></Suspense>} />
         <Route path="pages" element={<Suspense fallback={<AdminLoader />}><PagesManager /></Suspense>} />
+        <Route path="email-settings" element={<ProtectedRoute permission="manage_settings"><Suspense fallback={<AdminLoader />}><EmailSettingsManager /></Suspense></ProtectedRoute>} />
       </Route>
     </Routes>
   );

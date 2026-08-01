@@ -125,11 +125,14 @@ app.use(express.static(path.join(__dirname, 'public', 'dist')));
 // 2. Fallback route index.html (public/dist/index.html) ko serve karega
 app.get('/*splat', (req, res) => {
   const indexPath = path.join(__dirname, 'public', 'dist', 'index.html');
-  if (fs.existsSync(indexPath)) {
-    res.sendFile(indexPath);
-  } else {
-    res.send('API Server Running... (Frontend build files not found in public/dist/)');
-  }
+  fs.readFile(indexPath, 'utf8', (err, html) => {
+    if (err) {
+      console.error('Error reading index.html:', err);
+      res.send('API Server Running... (Frontend build files not found in public/dist/)');
+    } else {
+      res.send(html);
+    }
+  });
 });
 
 // ─── Global Error Handler ─────────────────────────────────────────────────────

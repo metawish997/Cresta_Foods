@@ -71,7 +71,8 @@ app.get('/uploads/:filename', async (req, res, next) => {
     }
     const filePath = path.join(uploadsDir, req.params.filename);
     if (fs.existsSync(filePath)) {
-      res.sendFile(filePath);
+      res.type(req.params.filename);
+      fs.createReadStream(filePath).pipe(res);
     } else {
       res.status(404).send('Not Found');
     }
